@@ -1,0 +1,20 @@
+## ------------------------------------------------------------------
+: ReadReport
+- title: __TITLE__
+- autors: __AUTHOR__
+- doi: __DOI__
+- id: __ID__
+- year: __YEAR__
+- read: __TODAY__
+
+- Abstract: __ABSTRACT__
+
+@ __KEYWORDS__
+
+## ------------------------------------------------------------------
+: GeneralNote
+
+
+
+
+[Commands]
