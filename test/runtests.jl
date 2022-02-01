@@ -1,6 +1,6 @@
-using ResearchBookAssistant
+using ResearchBooks
 using Test
 
-@testset "ResearchBookAssistant.jl" begin
+@testset "ResearchBooks.jl" begin
     # Write your tests here.
 end
