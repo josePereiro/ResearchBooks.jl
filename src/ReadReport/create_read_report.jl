@@ -30,7 +30,7 @@ end
 function create_read_report(refid::String)
     ref = get(load_bookbib(), refid, nothing)
     isnothing(ref) && 
-        error("ref '$(refid)' not found at any source libs: $(bibtex_paths())")
+        error("ref '$(refid)' not found at any source bibs: $(bibtex_paths())")
 
     rrdir = _rr_dir(refid)
     mkpath(rrdir)

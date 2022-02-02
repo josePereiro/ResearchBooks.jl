@@ -1,4 +1,4 @@
-struct abstract RBItem end
+abstract type RBItem end
 mutable struct RBSection
     doc
     key::String
@@ -8,9 +8,7 @@ end
 mutable struct RBDoc
     book
     key::String
-    path::String
-
-    secs::Vector{}
+    secs::Vector{RBSection}
 end
 
 mutable struct RBook
@@ -18,5 +16,4 @@ mutable struct RBook
     docs::Vector{RBDoc}
 end
 
-RBook
-
+RBook() = RBook("", RBDoc[])
