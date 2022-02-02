@@ -17,7 +17,24 @@ currbook!() = (GLOB_STATE[_CURR_BOOK_KEY] = nothing)
 currbook() = get!(GLOB_STATE, _CURR_BOOK_KEY, nothing) 
 
 ## ------------------------------------------------------------------
-function open_book(path)
+function openbook(; reload = false)
+    
+    # book dir
+    _source_user_config()
+    path = _config_book_dir()
+    isempty(path) && error("'book' path not defined!")
+
+    # Load cache
+    # GLOB_STATE
+    
+    # If cache missed
+    book = currbook()
+    if isnothing(book)
+        book = RBook(path, RBDoc[])
+    end
+    currbook!(book)
+    
+    return book
 end
 
 ## ------------------------------------------------------------------
@@ -27,5 +44,7 @@ function new_document(key; kwargs...)
     
     # TODO:: Finish this
     doc = RBDoc(book, key, RBSection[])
+    push!(book, doc)
+    
     currdoc!(doc)
 end

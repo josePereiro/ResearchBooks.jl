@@ -20,6 +20,7 @@ module ResearchBooks
     export currsec, currsec!
     export currbook, currbook!
     export new_document
+    export openbook
     
     include("Core/bookbib.jl")
     include("Core/crossref.jl")
@@ -28,9 +29,7 @@ module ResearchBooks
     include("Core/user_config.jl")
     include("Core/utils.jl")
 
-    export load_bookbib, clear_bookbib_file
-    export book_dir, bibtex_paths, open_user_config_file, source_user_config
-    export book_relpath
+    export open_user_config_file
 
     include("ReadReport/dirtree.jl")
     include("ReadReport/create_read_report.jl")
@@ -39,8 +38,8 @@ module ResearchBooks
     include("Issues/dirtree.jl")
     include("Issues/issues.jl")
 
-    function __init__()
-        source_user_config()
-    end
+    # function __init__()
+        
+    # end
 
 end # end module
