@@ -20,16 +20,14 @@ module ResearchBooks
     export currsec, currsec!
     export currbook, currbook!
     export new_document
-    export openbook
+    export find_bookdir, openbook
     
     include("Core/bookbib.jl")
     include("Core/crossref.jl")
     include("Core/git.jl")
     include("Core/open.jl")
-    include("Core/user_config.jl")
+    include("Core/configfile.jl")
     include("Core/utils.jl")
-
-    export open_user_config_file
 
     include("ReadReport/dirtree.jl")
     include("ReadReport/create_read_report.jl")

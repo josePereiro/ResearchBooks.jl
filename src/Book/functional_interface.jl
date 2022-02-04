@@ -17,12 +17,39 @@ currbook!() = (GLOB_STATE[_CURR_BOOK_KEY] = nothing)
 currbook() = get!(GLOB_STATE, _CURR_BOOK_KEY, nothing) 
 
 ## ------------------------------------------------------------------
-function openbook(; reload = false)
-    
-    # book dir
-    _source_user_config()
-    path = _config_book_dir()
-    isempty(path) && error("'book' path not defined!")
+function find_bookdir(dir0::String)
+
+    # curr dir
+    # if isfile(config_file(dir0))
+    #     return dir0
+    # end
+    # @show dir0
+
+    # search up
+    root = homedir()
+    bookdir = ""
+    walkup(dir0) do path
+        if isdir(path)
+            @show path
+            (path == root) && return true
+            bookfile = config_file(path)
+            @show isfile(bookfile)
+            if isfile(bookfile)
+                bookdir = path
+                return true
+            end
+        end
+    end
+    return bookdir
+
+end
+
+## ------------------------------------------------------------------
+function openbook(dir0::String; reload = false)
+
+    # bookdir
+    bookdir = find_bookdir(dir0)
+    isempty(bookdir) && error("No '$(_RBOOK_FILE_NAME)' file found in current or any parent directory")
 
     # Load cache
     # GLOB_STATE
@@ -30,7 +57,7 @@ function openbook(; reload = false)
     # If cache missed
     book = currbook()
     if isnothing(book)
-        book = RBook(path, RBDoc[])
+        book = RBook(bookdir, RBDoc[])
     end
     currbook!(book)
     
