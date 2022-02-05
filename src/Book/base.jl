@@ -44,7 +44,7 @@ const _SHOW_LIMIT = 20
 function Base.show(io::IO, b::RBook)
     println(io, "RBook with ", length(b), " document(s)")
     println(io, "dir: ", bookdir(b))
-    println(io, "docs:")
+    print(io, "docs:")
     for (i, key) in enumerate(keys(b))
         print(io, "\n   \"", key, "\"")
         if i == _SHOW_LIMIT
@@ -58,7 +58,7 @@ function Base.show(io::IO, d::RBDoc)
     println(io, "RBDoc with ", length(d), " section(s)")
     println(io, "bookdir: ", bookdir(d))
     println(io, "dockey: \"", dockey(d), "\"")
-    println(io, "secs:")
+    print(io, "secs:")
     for (i, key) in enumerate(keys(d))
         print(io, "\n   \"", key, "\"")
         if i == _SHOW_LIMIT

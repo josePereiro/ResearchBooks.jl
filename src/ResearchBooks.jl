@@ -23,7 +23,7 @@ module ResearchBooks
     export currbook, currbook!
     export new_document, new_section
     export add_section, add_note, add_pair, add_quote
-    export find_bookdir, openbook
+    export find_bookdir, openbook, seclink
     
     include("Core/bookbib.jl")
     include("Core/crossref.jl")

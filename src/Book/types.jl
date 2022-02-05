@@ -27,7 +27,7 @@ end
 ## ------------------------------------------------------------------
 # Section
 
-mutable struct RBSection
+struct RBSection
     doc
     key::String
     items::Vector{RBItem}
@@ -35,7 +35,7 @@ end
 
 ## ------------------------------------------------------------------
 # Doc
-mutable struct RBDoc
+struct RBDoc
     book
     key::String
     secs::OrderedDict{String, RBSection}
@@ -43,7 +43,7 @@ end
 
 ## ------------------------------------------------------------------
 # Book
-mutable struct RBook
+struct RBook
     dir::String
     docs::OrderedDict{String, RBDoc}
 end

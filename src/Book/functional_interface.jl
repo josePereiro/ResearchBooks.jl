@@ -54,13 +54,22 @@ function openbook(dir0::String; reload = false)
 end
 
 ## ------------------------------------------------------------------
-function new_document(key; kwargs...)
+function format_idkey(key)
+    reg = Regex("[^A-Za-z0-9]")
+    key = replace(key, reg => "_")
+    return key
+end
+
+function new_document(dockey::String; kwargs...)
+    
+    # book
     book = currbook()
     isnothing(book) && error("No Book selected. See `openbook`.")
     
     # Add doc
-    doc = RBDoc(book, key)
-    book[key] = doc
+    dockey = format_idkey(dockey)
+    doc = RBDoc(book, dockey)
+    book[dockey] = doc
     currdoc!(doc)
     
     # Add Meta section
@@ -72,7 +81,15 @@ function new_document(key; kwargs...)
     return doc
 end
 
+# Use a kwargs as input for the dockey
+function new_document(dockey::Symbol; kwargs...)
+    !haskey(kwargs, dockey) && error("refkey ':$(dockey)' missing!")
+    dockey = string(kwargs[dockey])
+    new_document(dockey::String; kwargs...)
+end
+
 function add_section!(doc::RBDoc, key::String)
+    key = format_idkey(key)
     sec = RBSection(doc, key)
     doc[key] = sec
     currsec!(sec)
@@ -113,3 +130,10 @@ function add_quote(txt::String, txts::String...)
     end
     return sec
 end
+
+## ------------------------------------------------------------------
+# Link Tools
+seclink(sec::RBSection) = string(dockey(sec), "::", seckey(sec))
+seclink() = seclink(currsec())
+seclink(i::Int) = seclink(currdoc()[i])
+seclink(key::String) = seclink(currdoc()[key])
