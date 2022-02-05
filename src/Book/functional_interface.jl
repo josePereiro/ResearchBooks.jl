@@ -19,21 +19,13 @@ currbook() = get!(GLOB_STATE, _CURR_BOOK_KEY, nothing)
 ## ------------------------------------------------------------------
 function find_bookdir(dir0::String)
 
-    # curr dir
-    # if isfile(config_file(dir0))
-    #     return dir0
-    # end
-    # @show dir0
-
     # search up
     root = homedir()
     bookdir = ""
     walkup(dir0) do path
         if isdir(path)
-            @show path
             (path == root) && return true
             bookfile = config_file(path)
-            @show isfile(bookfile)
             if isfile(bookfile)
                 bookdir = path
                 return true
@@ -41,37 +33,83 @@ function find_bookdir(dir0::String)
         end
     end
     return bookdir
-
 end
 
 ## ------------------------------------------------------------------
 function openbook(dir0::String; reload = false)
-
-    # bookdir
-    bookdir = find_bookdir(dir0)
-    isempty(bookdir) && error("No '$(_RBOOK_FILE_NAME)' file found in current or any parent directory")
-
-    # Load cache
-    # GLOB_STATE
     
     # If cache missed
     book = currbook()
     if isnothing(book)
-        book = RBook(bookdir, RBDoc[])
+
+        # bookdir
+        bookdir = find_bookdir(dir0)
+        isempty(bookdir) && error("No '$(_RBOOK_FILE_NAME)' file found in current or any parent directory")
+
+        # new book
+        book = RBook(bookdir)
+        currbook!(book)
     end
-    currbook!(book)
-    
     return book
 end
 
 ## ------------------------------------------------------------------
 function new_document(key; kwargs...)
     book = currbook()
-    isnothing(book) && error("Any current Book available")
+    isnothing(book) && error("No Book selected. See `openbook`.")
     
-    # TODO:: Finish this
-    doc = RBDoc(book, key, RBSection[])
-    push!(book, doc)
-    
+    # Add doc
+    doc = RBDoc(book, key)
+    book[key] = doc
     currdoc!(doc)
+    
+    # Add Meta section
+    sec = add_section!(doc, "Meta")
+    for (key, value) in kwargs
+        add_pair!(sec, string(key), value)
+    end
+
+    return doc
+end
+
+function add_section!(doc::RBDoc, key::String)
+    sec = RBSection(doc, key)
+    doc[key] = sec
+    currsec!(sec)
+end
+add_section(key::String) = add_section!(currdoc(), key)
+new_section = add_section
+
+## ------------------------------------------------------------------
+function add_pair!(sec::RBSection, key::String, val)
+    pair = RBPair(sec, key, val)
+    push!(sec, pair)
+end
+add_pair(key::String, val) = add_pair!(currsec(), key, val)
+
+function add_note!(sec::RBSection, txt::String)
+    note = RBNote(sec, txt)
+    push!(sec, note)
+end
+function add_note(txt::String, txts::String...) 
+    sec = currsec()
+    add_note!(sec, txt)
+    for txti in txts
+        add_note!(sec, txti)
+    end
+    return sec
+end
+
+
+function add_quote!(sec::RBSection, txt::String)
+    note = RBQuote(sec, txt)
+    push!(sec, note)
+end
+function add_quote(txt::String, txts::String...) 
+    sec = currsec()
+    add_quote!(sec, txt)
+    for txti in txts
+        add_quote!(sec, txti)
+    end
+    return sec
 end

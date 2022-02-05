@@ -7,6 +7,7 @@ module ResearchBooks
     using ArgParse
     using XMLDict
     using Dates
+    using OrderedCollections
 
     # Re-exports
     export walkup, filterup
@@ -16,10 +17,12 @@ module ResearchBooks
     include("Book/base.jl")
     include("Book/functional_interface.jl")
     
+    export RBook
     export currdoc, currdoc!
     export currsec, currsec!
     export currbook, currbook!
-    export new_document
+    export new_document, new_section
+    export add_section, add_note, add_pair, add_quote
     export find_bookdir, openbook
     
     include("Core/bookbib.jl")
@@ -28,6 +31,8 @@ module ResearchBooks
     include("Core/open.jl")
     include("Core/configfile.jl")
     include("Core/utils.jl")
+
+    export foreach_bibs, findall_bibs, findfirst_bibs
 
     include("ReadReport/dirtree.jl")
     include("ReadReport/create_read_report.jl")

@@ -1,3 +1,6 @@
+## ----------------------------------------------------------------------------
+# Sync and Load
+
 const _BIB_PATHS_CONFIG_KEY = "bibs"
 
 function bibtex_paths(bookdir)
@@ -5,7 +8,6 @@ function bibtex_paths(bookdir)
     bibs = get(config, _BIB_PATHS_CONFIG_KEY, "")
     return (bibs isa String) ? [bibs] : bibs
 end
-
 
 function _read_bibtex(path)
     str = read(path, String)
@@ -44,3 +46,67 @@ function load_bookbib(bookdir)
     end
     return _BOOKBIB
 end
+load_bookbib(bookdir, dockey) = get(load_bookbib(bookdir), dockey, "")
+
+## ----------------------------------------------------------------------------
+# Analisys
+
+function findin_bibs(f::Function, bookdir)
+    bib = load_bookbib(bookdir)
+    
+end
+
+
+## ------------------------------------------------------------------
+_match(rstr::String, str::String) = match(Regex(rstr), str)
+_match(r, str) = match(r, str)
+
+function has_match(dict::Dict, qp::Pair)
+    rkey, reg = qp
+    rkey = string(rkey)
+    !haskey(dict, rkey) && return false
+    dval = dict[rkey]
+    m = _match(reg, dval)
+    !isnothing(m)
+end
+
+function has_match(dict::Dict, qps::Vector)
+    for qp in qps
+        ismatch = has_match(dict, qp)
+        !ismatch && return false
+    end
+    return true
+end
+
+function foreach_bibs(f::Function, bookdir)
+    bibs = load_bookbib(bookdir)
+    for (dockey, bib) in bibs 
+        retflag = f(dockey, bib)
+        (retflag === true) && return nothing 
+    end
+    return nothing
+end
+
+function findall_bibs(bookdir, qp, qps...)
+    found = String[]
+    foreach_bibs(bookdir) do dockey, bib
+        match_flag = has_match(bib, qp)
+        for qpi in qps
+            match_flag |= has_match(bib, qpi)
+        end
+        match_flag && push!(found, dockey)
+    end
+    found
+end
+
+function findfirst_bibs(bookdir, qp, qps...)
+    foreach_bibs(bookdir) do dockey, bib
+        match_flag = has_match(bib, qp)
+        for qpi in qps
+            match_flag |= has_match(bib, qpi)
+        end
+        match_flag && return dockey
+    end
+    return ""
+end
+
