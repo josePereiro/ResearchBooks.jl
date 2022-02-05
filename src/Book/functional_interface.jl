@@ -36,6 +36,29 @@ function find_bookdir(dir0::String)
 end
 
 ## ------------------------------------------------------------------
+const _INCLUDING_FLAG_KEY = "including"
+_including_flag!(flag) = (GLOB_STATE[_INCLUDING_FLAG_KEY] = flag)
+_including_flag() = get!(GLOB_STATE, _INCLUDING_FLAG_KEY, false)
+
+function _include_rbfiles_keepout(path)
+    basename(path) == ".git"
+end
+
+function include_rbfiles(; force = false)
+    book = currbook()
+    bdir = bookdir(book)
+    keepout = _include_rbfiles_keepout
+    walkdown(bdir; keepout) do path
+        !isfile(path) && return false
+        !endswith(path, ".rb.jl") && return false
+        if force || _need_update(path)
+            include(path)
+            _up_mtime_reg!(path)
+        end
+    end
+end
+
+## ------------------------------------------------------------------
 function openbook(dir0::String; reload = false)
     
     # If cache missed
@@ -50,6 +73,17 @@ function openbook(dir0::String; reload = false)
         book = RBook(bookdir)
         currbook!(book)
     end
+
+    # Update book
+    if reload || !_including_flag()
+        try
+            _including_flag!(true)
+            include_rbfiles(; force = reload)
+        finally
+            _including_flag!(false)
+        end
+    end
+
     return book
 end
 
@@ -60,7 +94,7 @@ function format_idkey(key)
     return key
 end
 
-function new_document(dockey::String; kwargs...)
+function new_document!(dockey::String; kwargs...)
     
     # book
     book = currbook()
@@ -82,10 +116,10 @@ function new_document(dockey::String; kwargs...)
 end
 
 # Use a kwargs as input for the dockey
-function new_document(dockey::Symbol; kwargs...)
+function new_document!(dockey::Symbol; kwargs...)
     !haskey(kwargs, dockey) && error("refkey ':$(dockey)' missing!")
     dockey = string(kwargs[dockey])
-    new_document(dockey::String; kwargs...)
+    new_document!(dockey::String; kwargs...)
 end
 
 function add_section!(doc::RBDoc, key::String)
@@ -94,21 +128,21 @@ function add_section!(doc::RBDoc, key::String)
     doc[key] = sec
     currsec!(sec)
 end
-add_section(key::String) = add_section!(currdoc(), key)
-new_section = add_section
+add_section!(key::String) = add_section!(currdoc(), key)
+new_section! = add_section!
 
 ## ------------------------------------------------------------------
 function add_pair!(sec::RBSection, key::String, val)
     pair = RBPair(sec, key, val)
     push!(sec, pair)
 end
-add_pair(key::String, val) = add_pair!(currsec(), key, val)
+add_pair!(key::String, val) = add_pair!(currsec(), key, val)
 
 function add_note!(sec::RBSection, txt::String)
     note = RBNote(sec, txt)
     push!(sec, note)
 end
-function add_note(txt::String, txts::String...) 
+function add_note!(txt::String, txts::String...) 
     sec = currsec()
     add_note!(sec, txt)
     for txti in txts
@@ -122,7 +156,7 @@ function add_quote!(sec::RBSection, txt::String)
     note = RBQuote(sec, txt)
     push!(sec, note)
 end
-function add_quote(txt::String, txts::String...) 
+function add_quote!(txt::String, txts::String...) 
     sec = currsec()
     add_quote!(sec, txt)
     for txti in txts

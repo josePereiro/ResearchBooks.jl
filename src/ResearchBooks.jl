@@ -21,10 +21,11 @@ module ResearchBooks
     export currdoc, currdoc!
     export currsec, currsec!
     export currbook, currbook!
-    export new_document, new_section
-    export add_section, add_note, add_pair, add_quote
+    export new_document!, new_section!
+    export add_section!, add_note!, add_pair!, add_quote!
     export find_bookdir, openbook, seclink
     
+    include("Core/mtime.jl")
     include("Core/bookbib.jl")
     include("Core/crossref.jl")
     include("Core/git.jl")
