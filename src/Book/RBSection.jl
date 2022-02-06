@@ -10,6 +10,9 @@ items(s::RBSection) = s.items
 dockey(s::RBSection) = dockey(parent(s))
 seckey(s::RBSection) = s.key
 
+Base.collect(s::RBSection) = collect(items(s))
+Base.collect(T::Type, s::RBSection) = filter((i) -> i isa T, items(s))
+
 ## ------------------------------------------------------------------
 # Array
 Base.length(s::RBSection) = length(items(s))
@@ -18,6 +21,8 @@ Base.setindex!(s::RBSection, value::RBItem, idx::Int) = setindex!(items(s), valu
 Base.getindex(s::RBSection, idx) = getindex(items(s), idx)
 Base.lastindex(s::RBSection) = lastindex(items(s))
 Base.firstindex(s::RBSection) = firstindex(items(s))
+Base.iterate(s::RBSection) = iterate(items(s))
+Base.iterate(s::RBSection, state) = iterate(items(s), state)
 
 ## ------------------------------------------------------------------
 # Show

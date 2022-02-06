@@ -6,7 +6,7 @@ function _open_src_libs(cmd = "code")
 end
 
 function _open_book_root(cmd = "code")
-    broot = book_dir()
+    broot = bookdir()
     if isdir(broot)
         run(`$(cmd) $(broot)`; wait = false)
     end

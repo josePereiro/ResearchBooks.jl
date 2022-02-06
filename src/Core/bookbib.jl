@@ -19,7 +19,7 @@ bookbib_file(bookdir) = joinpath(bookdir, "bookbib.toml")
 clear_bookbib_file(bookdir) = rm(bookbib_file(bookdir); force = true)
 
 const _BOOKBIB = Dict{String, Any}()
-function load_bookbib(bookdir)
+function load_bookbib(bookdir::String)
 
     # Check for update
     tomlfile = bookbib_file(bookdir)
@@ -48,16 +48,10 @@ function load_bookbib(bookdir)
 end
 load_bookbib(bookdir, dockey) = get(load_bookbib(bookdir), dockey, "")
 
+load_bookbib() = load_bookbib(bookdir(currbook()))
+
 ## ----------------------------------------------------------------------------
-# Analisys
-
-function findin_bibs(f::Function, bookdir)
-    bib = load_bookbib(bookdir)
-    
-end
-
-
-## ------------------------------------------------------------------
+# find
 _match(rstr::String, str::String) = match(Regex(rstr), str)
 _match(r, str) = match(r, str)
 
@@ -87,7 +81,7 @@ function foreach_bibs(f::Function, bookdir)
     return nothing
 end
 
-function findall_bibs(bookdir, qp, qps...)
+function findall_bibs(bookdir::String, qp, qps...)
     found = String[]
     foreach_bibs(bookdir) do dockey, bib
         match_flag = has_match(bib, qp)
@@ -98,8 +92,13 @@ function findall_bibs(bookdir, qp, qps...)
     end
     found
 end
+function findall_bibs(qp, qps...)
+    book = currbook()
+    bdir = bookdir(book)
+    findall_bibs(bdir, qp, qps...)
+end
 
-function findfirst_bibs(bookdir, qp, qps...)
+function findfirst_bibs(bookdir::String, qp, qps...)
     foreach_bibs(bookdir) do dockey, bib
         match_flag = has_match(bib, qp)
         for qpi in qps
@@ -109,4 +108,8 @@ function findfirst_bibs(bookdir, qp, qps...)
     end
     return ""
 end
-
+function findfirst_bibs(qp, qps...)
+    book = currbook()
+    bdir = bookdir(book)
+    findfirst_bibs(bdir, qp, qps...)
+end

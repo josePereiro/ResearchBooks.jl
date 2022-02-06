@@ -14,7 +14,7 @@ module ResearchBooks
     export walkdown, filterdown
 
     include("Book/types.jl")
-    include("Book/RBItiem.jl")
+    include("Book/RBItem.jl")
     include("Book/RBSection.jl")
     include("Book/RBDoc.jl")
     include("Book/RBook.jl")
@@ -22,6 +22,7 @@ module ResearchBooks
     include("Book/RBPair.jl")
     include("Book/RBQuote.jl")
     include("Book/RBTagLine.jl")
+    include("Book/RBRefs.jl")
     include("Book/filesys.jl")
     include("Book/rbfiles.jl")
     include("Book/openbook.jl")
@@ -29,7 +30,8 @@ module ResearchBooks
     include("Book/markdown.jl")
     include("Book/utils.jl")
     
-    export RBook
+    export RBook, RBDoc, RBSection
+    export RBItem, RBNote, RBPair, RBQuote, RBTagLine
     export currdoc, currdoc!
     export currsec, currsec!
     export currbook, currbook!
@@ -38,6 +40,8 @@ module ResearchBooks
     export find_bookdir, seclink
     export openbook, @openbook
     export @create_doc_readme
+    export getdoi, getyear, getauthor
+    export references
     
     include("Core/mtime.jl")
     include("Core/bookbib.jl")
@@ -47,7 +51,9 @@ module ResearchBooks
     include("Core/configfile.jl")
     include("Core/utils.jl")
 
+    export load_bookbib
     export foreach_bibs, findall_bibs, findfirst_bibs
+    
 
     include("ReadReport/dirtree.jl")
     include("ReadReport/create_read_report.jl")

@@ -16,6 +16,8 @@ Base.haskey(b::RBook, key) = haskey(documents(b), key)
 Base.getindex(b::RBook, key::String) = getindex(documents(b), key)
 Base.setindex!(b::RBook, value::RBDoc, key::String) = setindex!(documents(b), value, key)
 Base.keys(b::RBook) = keys(documents(b))
+Base.get(b::RBook, key::String, default) = get(documents(b), key, default)
+Base.get!(b::RBook, key::String, default) = get!(documents(b), key, default)
 
 ## ------------------------------------------------------------------
 # Array

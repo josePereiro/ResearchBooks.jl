@@ -1,5 +1,5 @@
 function _push_book(cmd = "git")
-    broot = book_dir()
+    broot = bookdir()
     if isdir(broot)
         run(`$(cmd) -C $(broot) add .`; wait = true)
         cm = "Assistant push"

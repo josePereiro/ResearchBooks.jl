@@ -9,6 +9,19 @@ bookdir(d::RBDoc) = bookdir(parent(d))
 sections(d::RBDoc) = d.secs
 dockey(d::RBDoc) = d.key
 
+const _DOI_META_KEY = "doi"
+function getdoi(d::RBDoc)
+    meta = get(d, _META_SECTION_KEY, nothing)
+    isnothing(meta) && return ""
+    pairs = collect(RBPair, meta)
+    for (k, v) in pairs
+        (k != _DOI_META_KEY) && continue
+        return _doi_to_url(v)
+    end
+    return ""
+end
+getdoi() = getdoi(currdoc())
+
 ## ------------------------------------------------------------------
 # OrderedDict
 Base.length(d::RBDoc) = length(sections(d))
@@ -17,6 +30,8 @@ Base.getindex(d::RBDoc, key::String) = getindex(sections(d), key)
 Base.setindex!(d::RBDoc, value::RBSection, key::String) = setindex!(sections(d), value, key)
 Base.push!(d::RBDoc, s::Pair, ss::Pair...) = push!(sections(d), s, ss...)
 Base.keys(d::RBDoc) = keys(sections(d))
+Base.get(d::RBDoc, key::String, default) = get(sections(d), key, default)
+Base.get!(d::RBDoc, key::String, default) = get!(sections(d), key, default)
 
 ## ------------------------------------------------------------------
 # Array
@@ -43,6 +58,7 @@ function Base.show(io::IO, d::RBDoc)
 end
 
 ## ------------------------------------------------------------------
+const _META_SECTION_KEY = "Meta"
 function new_document!(dockey::String; kwargs...)
     
     # book
@@ -56,7 +72,7 @@ function new_document!(dockey::String; kwargs...)
     currdoc!(doc)
     
     # Add Meta section
-    sec = add_section!(doc, "Meta")
+    sec = add_section!(doc, _META_SECTION_KEY)
     for (key, value) in kwargs
         add_pair!(sec, string(key), value)
     end

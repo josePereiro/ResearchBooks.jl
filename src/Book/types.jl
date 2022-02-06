@@ -24,6 +24,13 @@ mutable struct RBTagLine <: RBItem
 end
 
 ## ------------------------------------------------------------------
+# References
+struct RBRefs
+    doc
+    refs::Vector
+end
+
+## ------------------------------------------------------------------
 # Section
 struct RBSection
     doc
