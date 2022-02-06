@@ -25,9 +25,20 @@ end
 
 ## ------------------------------------------------------------------
 # References
+
+# A generalize reference object
+struct RBRef
+
+    bibkey::String
+    author::String
+    year::String
+    title::String
+    doi::String
+
+    dict::AbstractDict 
+end
 struct RBRefs
-    doc
-    refs::Vector
+    refs::Vector{RBRef}
 end
 
 ## ------------------------------------------------------------------

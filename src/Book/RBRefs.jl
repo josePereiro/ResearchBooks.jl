@@ -1,25 +1,6 @@
 ## ------------------------------------------------------------------
-function references()
-    doc = currdoc()
-    doi = getdoi(doc)
-    refs = _crossref_references(doi)
-    return RBRefs(doc, refs)
-end
-
-
-## ------------------------------------------------------------------
 # Accessors
 references(r::RBRefs) = r.refs
-dockey(r::RBRefs) = dockey(r.doc)
-
-function _do_to_refs(f::Function, r::RBRefs, idx)
-    ref = references(r)[idx]
-    return (ref isa Vector) ? f.(ref) : f(ref)
-end
-
-getdoi(r::RBRefs, idx) = _do_to_refs(_crossref_entry_doi, r, idx)
-getyear(r::RBRefs, idx) = _do_to_refs(_crossref_entry_year, r, idx)
-getauthor(r::RBRefs, idx) = _do_to_refs(_crossref_entry_author, r, idx)
 
 ## ------------------------------------------------------------------
 # Base
@@ -34,10 +15,32 @@ Base.iterate(r::RBRefs, state) = iterate(references(r), state)
 # show
 function Base.show(io::IO, r::RBRefs)
     println(io, "RBRefs with ", length(r), " reference(s)")
-    println(io, "dockey: \"", dockey(r), "\"")
+end
+
+function Base.show(io::IO, r::RBRef)
+    print(io, "RBRef")
+    for f in [:bibkey, :author, :year, :title, :doi]
+        val = getproperty(r, f)
+        isempty(val) && continue
+        print(io, "\n   ", f, ": \"", val, "\"")
+    end
 end
 
 ## ------------------------------------------------------------------
-function findall_refs()
-    
+function findall_refs(r::RBRefs, q, qs...)
+    refs = references(r)
+
+    found = Int[]
+    for (i, dict) in enumerate(refs)
+        str = string(dict)
+        match_flag = has_match(str, q)
+        for qi in qs
+            match_flag |= has_match(str, qi)
+        end
+        match_flag && push!(found, i)
+    end
+    found
+
 end
+
+findall_refs(q, qs...) = findall_refs(references(), q, qs...)

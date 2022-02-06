@@ -52,3 +52,26 @@ function _newer(f1::String, f2::String)
     return t1 > t2 ? f1 : f2
 end
 
+## ------------------------------------------------------------------
+_match(rstr::String, str::String) = match(Regex(rstr), str)
+_match(r, str) = match(r, str)
+
+function has_match(dict::Dict, qp::Pair)
+    rkey, reg = qp
+    rkey = string(rkey)
+    !haskey(dict, rkey) && return false
+    dval = string(dict[rkey])
+    m = _match(reg, dval)
+    return !isnothing(m)
+end
+
+has_match(str::String, qp::String) = !isnothing(_match(qp, str))
+has_match(str::String, qp::Regex) = !isnothing(_match(qp, str))
+
+function has_match(target, qps::Vector)
+    for qp in qps
+        ismatch = has_match(target, qp)
+        !ismatch && return false
+    end
+    return true
+end

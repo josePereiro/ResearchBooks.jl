@@ -47,14 +47,24 @@ function _crossref_entry_doi(ref::AbstractDict)
     isnothing(m) ? "" : string(m.match)
 end
 
-function _crossref_entry_unstructured_citation(ref::AbstractDict)
-    get(ref, "unstructured_citation", "")
+function _crossref_to_rbref(ref::AbstractDict)
+    bibkey = ""
+    author = get(ref, "author", "")
+    year = get(ref, "cYear", "")
+    title = get(ref, "article_title", "")
+    doi = _crossref_entry_doi(ref)
+    return RBRef(bibkey, author, year, title, doi, ref)
 end
 
-function _crossref_entry_year(ref::AbstractDict)
-    get(ref, "cYear", "")
+## ------------------------------------------------------------------
+function crossrefs()
+    doc = currdoc()
+    doi = getdoi(doc)
+    ref_dicts = _crossref_references(doi)
+    refs = RBRef[]
+    for dict in ref_dicts
+        push!(refs, _crossref_to_rbref(dict))
+    end
+    return RBRefs(refs)
 end
 
-function _crossref_entry_author(ref::AbstractDict)
-    get(ref, "author", "")
-end

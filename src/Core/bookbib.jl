@@ -18,6 +18,15 @@ end
 bookbib_file(bookdir) = joinpath(bookdir, "bookbib.toml")
 clear_bookbib_file(bookdir) = rm(bookbib_file(bookdir); force = true)
 
+function _bookbib_to_rbref(ref::AbstractDict)
+    bibkey = get(ref, "bibkey", "")
+    author = get(ref, "author", "")
+    year = get(ref, "year", "")
+    title = get(ref, "title", "")
+    doi = get(ref, "doi", "")
+    return RBRef(bibkey, author, year, title, doi, ref)
+end
+
 const _BOOKBIB = Dict{String, Any}()
 function load_bookbib(bookdir::String)
 
@@ -44,34 +53,15 @@ function load_bookbib(bookdir::String)
         empty!(_BOOKBIB)
         merge!(_BOOKBIB, TOML.parsefile(tomlfile))
     end
-    return _BOOKBIB
-end
-load_bookbib(bookdir, dockey) = get(load_bookbib(bookdir), dockey, "")
 
-load_bookbib() = load_bookbib(bookdir(currbook()))
+    refs = _bookbib_to_rbref.(values(_BOOKBIB))
+    return RBRefs(refs)
+end
+load_bookbib() = load_bookbib(bookdir())
+
 
 ## ----------------------------------------------------------------------------
 # find
-_match(rstr::String, str::String) = match(Regex(rstr), str)
-_match(r, str) = match(r, str)
-
-function has_match(dict::Dict, qp::Pair)
-    rkey, reg = qp
-    rkey = string(rkey)
-    !haskey(dict, rkey) && return false
-    dval = dict[rkey]
-    m = _match(reg, dval)
-    !isnothing(m)
-end
-
-function has_match(dict::Dict, qps::Vector)
-    for qp in qps
-        ismatch = has_match(dict, qp)
-        !ismatch && return false
-    end
-    return true
-end
-
 function foreach_bibs(f::Function, bookdir)
     bibs = load_bookbib(bookdir)
     for (dockey, bib) in bibs 
@@ -92,6 +82,7 @@ function findall_bibs(bookdir::String, qp, qps...)
     end
     found
 end
+
 function findall_bibs(qp, qps...)
     book = currbook()
     bdir = bookdir(book)
