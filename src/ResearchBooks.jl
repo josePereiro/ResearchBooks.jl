@@ -49,12 +49,11 @@ module ResearchBooks
     include("Core/git.jl")
     include("Core/open.jl")
     include("Core/configfile.jl")
+    include("Core/find_match.jl")
     include("Core/utils.jl")
 
-    export load_bookbib
-    export findall_refs
-    export foreach_bibs, findall_bibs, findfirst_bibs
-    export crossrefs
+    export bookbib, findall_bookbib, findfirst_bookbib, filter_bookbib
+    export crossrefs, findall_crossrefs, findfirst_crossrefs, filter_crossrefs
     
 
     include("ReadReport/dirtree.jl")

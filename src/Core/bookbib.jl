@@ -28,7 +28,7 @@ function _bookbib_to_rbref(ref::AbstractDict)
 end
 
 const _BOOKBIB = Dict{String, Any}()
-function load_bookbib(bookdir::String)
+function bookbib(bookdir::String)
 
     # Check for update
     tomlfile = bookbib_file(bookdir)
@@ -54,53 +54,30 @@ function load_bookbib(bookdir::String)
         merge!(_BOOKBIB, TOML.parsefile(tomlfile))
     end
 
+    # return RBRefs
     refs = _bookbib_to_rbref.(values(_BOOKBIB))
     return RBRefs(refs)
 end
-load_bookbib() = load_bookbib(bookdir())
-
+bookbib() = bookbib(bookdir())
 
 ## ----------------------------------------------------------------------------
 # find
-function foreach_bibs(f::Function, bookdir)
-    bibs = load_bookbib(bookdir)
-    for (dockey, bib) in bibs 
-        retflag = f(dockey, bib)
-        (retflag === true) && return nothing 
-    end
-    return nothing
-end
 
-function findall_bibs(bookdir::String, qp, qps...)
-    found = String[]
-    foreach_bibs(bookdir) do dockey, bib
-        match_flag = has_match(bib, qp)
-        for qpi in qps
-            match_flag |= has_match(bib, qpi)
-        end
-        match_flag && push!(found, dockey)
-    end
-    found
+function findall_bookbib(bookdir::String, qp, qps...) 
+    vec = references(bookbib(bookdir))
+    findall_match(vec, qp, qps...)
 end
+findall_bookbib(qp, qps...) = findall_bookbib(bookdir(), qp, qps...)
 
-function findall_bibs(qp, qps...)
-    book = currbook()
-    bdir = bookdir(book)
-    findall_bibs(bdir, qp, qps...)
+function findfirst_bookbib(bookdir::String, qp, qps...) 
+    vec = references(bookbib(bookdir))
+    findfirst_match(vec, qp, qps...)
 end
+findfirst_bookbib(qp, qps...) = findfirst_bookbib(bookdir(), qp, qps...)
 
-function findfirst_bibs(bookdir::String, qp, qps...)
-    foreach_bibs(bookdir) do dockey, bib
-        match_flag = has_match(bib, qp)
-        for qpi in qps
-            match_flag |= has_match(bib, qpi)
-        end
-        match_flag && return dockey
-    end
-    return ""
+function filter_bookbib(bookdir::String, qp, qps...) 
+    vec = references(bookbib(bookdir))
+    filter_match(vec, qp, qps...)
 end
-function findfirst_bibs(qp, qps...)
-    book = currbook()
-    bdir = bookdir(book)
-    findfirst_bibs(bdir, qp, qps...)
-end
+filter_bookbib(qp, qps...) = filter_bookbib(bookdir(), qp, qps...)
+

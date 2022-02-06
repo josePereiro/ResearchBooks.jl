@@ -28,7 +28,7 @@
 # end
 
 # function create_read_report(refid::String)
-#     ref = get(load_bookbib(), refid, nothing)
+#     ref = get(bookbib(), refid, nothing)
 #     isnothing(ref) && 
 #         error("ref '$(refid)' not found at any source bibs: $(bibtex_paths())")
 

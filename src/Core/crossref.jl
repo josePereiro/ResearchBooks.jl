@@ -68,3 +68,20 @@ function crossrefs()
     return RBRefs(refs)
 end
 
+## ------------------------------------------------------------------
+# find
+
+function findall_crossrefs(qp, qps...) 
+    vec = references(crossrefs())
+    findall_match(vec, qp, qps...)
+end
+
+function findfirst_crossrefs(qp, qps...) 
+    vec = references(crossrefs())
+    findfirst_match(vec, qp, qps...)
+end
+
+function filter_crossrefs(qp, qps...)
+    vec = references(crossrefs())
+    filter_match(vec, qp, qps...)
+end
