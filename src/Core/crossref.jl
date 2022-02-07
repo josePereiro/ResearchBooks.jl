@@ -2,7 +2,8 @@
 _crossref_meta_dir() = joinpath(depotdir(), ".crossref")
 
 function _download_crossref_meta(doi; dir = pwd(), force = false)
-    name = string(_format_doi_for_filename(doi), ".xml")
+    # name = string(_format_doi_for_filename(doi), ".json")
+    name = string(_format_doi_for_filename(doi), ".json")
     outpath = joinpath(dir, name)
     force && rm(outpath; force)
     if !isfile(outpath)
@@ -10,7 +11,8 @@ function _download_crossref_meta(doi; dir = pwd(), force = false)
         # TODO: Understand what is going on here!
         mkpath(dir)
         @info("Downloading", doi)
-        cmdstr = """curl -L -H "Accept: application/vnd.crossref.unixsd+xml" "$(doi)" > "$(outpath)" """
+        # cmdstr = """curl -L -H "Accept: application/vnd.crossref.unixsd+json" "$(doi)" > "$(outpath)" """
+        cmdstr = """curl -G "https://api.crossref.org/works/$(doi)" > "$(outpath)" """
         run(`bash -c $(cmdstr)`; wait = true)
         sleep(0.2) # Avoid loading the line
         @info("Done")
@@ -21,14 +23,14 @@ end
 ## ------------------------------------------------------------------
 function _crossref_references(doi::String)
     outdir = _crossref_meta_dir()
-    xmlfile = _download_crossref_meta(doi; dir = outdir)
+    jsonfile = _download_crossref_meta(doi; dir = outdir)
     try
-        xmlstr = read(xmlfile, String)
-        xmldict = XMLDict.xml_dict(xmlstr)
-        val = _find_key(xmldict, ["citation_list", "citation"])
+        jsonstr = read(jsonfile, String)
+        jsondict = JSON.parse(jsonstr)
+        val = _find_key(jsondict, ["message", "reference"])
         return isnothing(val) ? [] : val
     catch err
-        rm(xmlfile; force = true)
+        rm(jsonfile; force = true)
         rethrow(err)
     end
     return []
@@ -37,21 +39,34 @@ end
 
 ## ------------------------------------------------------------------
 # Access
-# The downloaded xml is unstable
+# Interface with crossref api json
 
-const _DOI_REGEX = Regex("\\d{1,10}\\.\\d{3,20}/[-._;()/:a-zA-Z0-9]+")
-function _crossref_entry_doi(ref::AbstractDict)
-    !haskey(ref, "doi") && return ""
-    doistr = string(ref["doi"])
-    m = match(_DOI_REGEX, doistr)
-    isnothing(m) ? "" : string(m.match)
+# const _DOI_REGEX = Regex("\\d{1,10}\\.\\d{3,20}/[-._;()/:a-zA-Z0-9]+")
+# function _crossref_entry_doi(ref::AbstractDict)
+#     !haskey(ref, "DOI") && return ""
+#     doistr = string(ref["DOI"])
+#     m = match(_DOI_REGEX, doistr)
+#     isnothing(m) ? "" : string(m.match)
+# end
+
+_crossref_entry_doi(ref::AbstractDict) = get(ref, "DOI", "")
+_crossref_entry_author(ref::AbstractDict) = get(ref, "author", "")
+_crossref_entry_year(ref::AbstractDict) = get(ref, "year", "")
+
+function _crossref_entry_title(ref::AbstractDict) 
+    hint = "-title"
+    for key in keys(ref)
+        key == "journal-title" && continue
+        endswith(key, "-title") && return ref[key]
+    end
+    return ""
 end
 
 function _crossref_to_rbref(ref::AbstractDict)
     bibkey = ""
-    author = get(ref, "author", "")
-    year = get(ref, "cYear", "")
-    title = get(ref, "article_title", "")
+    author = _crossref_entry_author(ref)
+    year = _crossref_entry_year(ref)
+    title = _crossref_entry_title(ref)
     doi = _crossref_entry_doi(ref)
     return RBRef(bibkey, author, year, title, doi, ref)
 end

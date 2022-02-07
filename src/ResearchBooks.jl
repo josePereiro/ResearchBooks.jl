@@ -2,10 +2,11 @@ module ResearchBooks
 
     import TOML
     import BibTeX
+    import JSON
+    import StringRepFilter
 
     using FilesTreeTools
     using ArgParse
-    using XMLDict
     using Dates
     using OrderedCollections
 
@@ -23,6 +24,7 @@ module ResearchBooks
     include("Book/RBQuote.jl")
     include("Book/RBTagLine.jl")
     include("Book/RBRefs.jl")
+    include("Book/RBRef.jl")
     include("Book/filesys.jl")
     include("Book/rbfiles.jl")
     include("Book/openbook.jl")
@@ -40,7 +42,7 @@ module ResearchBooks
     export find_bookdir, seclink
     export openbook, @openbook
     export @create_doc_readme
-    export getdoi, getyear, getauthor
+    export getdoi, getyear, getauthor, gettitle
     export references
     
     include("Core/mtime.jl")
