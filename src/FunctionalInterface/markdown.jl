@@ -19,7 +19,6 @@ function markdown_str(i::RBItem)
     return string("***'", nameof(i), "' not supported", "***")
 end
 
-# TODO: introduce grupping (tag grups, etc)
 function create_markdown(doc::RBDoc, outfile)
     lines = String[]
     

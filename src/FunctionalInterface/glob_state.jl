@@ -15,3 +15,4 @@ const _CURR_BOOK_KEY = "currbook"
 currbook!(b::RBook) = (GLOB_STATE[_CURR_BOOK_KEY] = b)
 currbook!() = (GLOB_STATE[_CURR_BOOK_KEY] = nothing)
 currbook() = get!(GLOB_STATE, _CURR_BOOK_KEY, nothing) 
+clearbook!() = currbook!()

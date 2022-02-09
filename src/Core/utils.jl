@@ -3,11 +3,10 @@ function _doi_to_url(doi)
         return doi 
     elseif startswith(doi, "doi.org")
         return string("https://", doi)
-    elseif startswith(doi, "10.")
+    elseif startswith(doi, r"\d{1,10}\.\d{3,20}")
         return string("https://doi.org/", doi)
-    else
-        error("We don't like your DOI: '$(doi)'")
     end
+    return ""
 end
 
 function _format_doi_for_filename(doi)
@@ -45,11 +44,13 @@ function _get_non_Aa(dict, skey, dfl)
     return dfl
 end
 
-# Retursn the newer file
+# Returns the newer file
 function _newer(f1::String, f2::String)
     t1 = mtime(f1)
     t2 = mtime(f2)
     return t1 > t2 ? f1 : f2
 end
 
-
+## ------------------------------------------------------------------
+genid(prefix::String, n::Int = 8) = string(prefix, randstring(n))
+genid(n::Int = 8) = randstring(n)

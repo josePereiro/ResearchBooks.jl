@@ -154,6 +154,11 @@ git-tree-sha1 = "3f3a2501fa7236e9b911e0f7a588c657e822bb6d"
 uuid = "5ae413db-bbd1-5e63-b57d-d24a61df00f5"
 version = "2.2.3+0"
 
+[[deps.EasyEvents]]
+path = "/Users/Pereiro/.julia/dev/EasyEvents"
+uuid = "1c3e8eab-fb9d-4faa-86a4-2d4d6165c1a6"
+version = "0.1.1"
+
 [[deps.Expat_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
 git-tree-sha1 = "b3bfd02e98aedfa5cf885665493c5598c350cd2f"

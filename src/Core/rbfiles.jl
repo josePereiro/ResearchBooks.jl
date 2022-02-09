@@ -17,10 +17,13 @@ function include_order(bookdir)
     return bookdir_relpath.(order)
 end
 
+const _INCLUDE_MTIME_EVENT = FileMTimeEvent()
 function include_rdfile(path; force = false)
     !isfile(path) && return false
     !_is_rbfile(path) && return false
-    if force || _need_update(path)
+    
+    need_update = has_event!(_INCLUDE_MTIME_EVENT, path)
+    if force || need_update
         include(path)
         _up_mtime_reg!(path)
         return true

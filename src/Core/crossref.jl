@@ -8,6 +8,7 @@ function _download_crossref_meta(doi; dir = pwd(), force = false)
     force && rm(outpath; force)
     if !isfile(outpath)
         doi = _doi_to_url(doi)
+        isempty(doi) && error("We don't like your DOI: '$(doi)'")
         # TODO: Understand what is going on here!
         mkpath(dir)
         @info("Downloading", doi)
@@ -21,9 +22,9 @@ function _download_crossref_meta(doi; dir = pwd(), force = false)
 end
 
 ## ------------------------------------------------------------------
-function _crossref_references(doi::String)
+function _crossref_references(doi::String; force = false)
     outdir = _crossref_meta_dir()
-    jsonfile = _download_crossref_meta(doi; dir = outdir)
+    jsonfile = _download_crossref_meta(doi; force, dir = outdir)
     try
         jsonstr = read(jsonfile, String)
         jsondict = JSON.parse(jsonstr)
@@ -67,15 +68,13 @@ function _crossref_to_rbref(ref::AbstractDict)
     author = _crossref_entry_author(ref)
     year = _crossref_entry_year(ref)
     title = _crossref_entry_title(ref)
-    doi = _crossref_entry_doi(ref)
+    doi = _doi_to_url(_crossref_entry_doi(ref))
     return RBRef(bibkey, author, year, title, doi, ref)
 end
 
 ## ------------------------------------------------------------------
-function crossrefs()
-    doc = currdoc()
-    doi = getdoi(doc)
-    ref_dicts = _crossref_references(doi)
+function crossrefs(doi::String = getdoi(); force = false)
+    ref_dicts = _crossref_references(doi; force)
     refs = RBRef[]
     for dict in ref_dicts
         push!(refs, _crossref_to_rbref(dict))

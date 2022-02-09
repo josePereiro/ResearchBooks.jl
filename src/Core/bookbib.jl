@@ -23,24 +23,18 @@ function _bookbib_to_rbref(ref::AbstractDict)
     author = get(ref, "author", "")
     year = get(ref, "year", "")
     title = get(ref, "title", "")
-    doi = get(ref, "doi", "")
+    doi = _doi_to_url(get(ref, "doi", ""))
     return RBRef(bibkey, author, year, title, doi, ref)
 end
 
 const _BOOKBIB = Dict{String, Any}()
+const _BOOKBIB_MTIME_EVENT = FileMTimeEvent()
 function bookbib(bookdir::String)
-
-    # Check for update
-    tomlfile = bookbib_file(bookdir)
-    update = !isfile(tomlfile)
-    for path in bibtex_paths(bookdir)
-        !isfile(path) && continue
-        update && continue
-        update |= _newer(tomlfile, path) == path
-    end
-
+    
     # Update or load
-    if update
+    tomlfile = bookbib_file(bookdir)
+    need_update = has_event!(_BOOKBIB_MTIME_EVENT, tomlfile)
+    if need_update
         empty!(_BOOKBIB)
         for path in bibtex_paths(bookdir)
             dict = _read_bibtex(path)

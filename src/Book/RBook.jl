@@ -6,10 +6,14 @@ RBook(bookdir::String = "") = RBook(bookdir, OrderedDict{String, RBDoc}())
 # Accessors
 parent(b::RBook) = b
 bookdir(b::RBook) = b.dir
+bookdir() = bookdir(currbook())
 documents(b::RBook) = b.docs
+clearbook!(b::RBook) = empty!(b)
+clearbook!() = empty!(currbook())
 
 ## ------------------------------------------------------------------
 # OrderedDict
+Base.empty!(b::RBook) = empty!(documents(b))
 Base.length(b::RBook) = length(documents(b))
 Base.push!(b::RBook, d::Pair, ds::Pair...) = push!(documents(b), d, ds...)
 Base.haskey(b::RBook, key) = haskey(documents(b), key)

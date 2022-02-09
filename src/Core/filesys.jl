@@ -1,5 +1,3 @@
-bookdir() = bookdir(currdoc())
-
 const _BOOK_DEPOT_DIR_NAME = ".research_book"
 depotdir() = joinpath(bookdir(), _BOOK_DEPOT_DIR_NAME)
 
