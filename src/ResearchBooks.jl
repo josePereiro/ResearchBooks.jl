@@ -47,10 +47,9 @@ module ResearchBooks
     export currsec, currsec!
     export currbook, currbook!
     export bookdir
-    export @__GENKEY!__
+    export @__GENKEY!__ 
     
     include("Core/filesys.jl")
-    include("Core/mtime.jl")
     include("Core/bookbib.jl")
     include("Core/crossref.jl")
     include("Core/git.jl")
