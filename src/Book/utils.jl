@@ -7,3 +7,21 @@ function format_idkey(key)
     key = replace(key, reg => "_")
     return key
 end
+
+function _preview(io::IO, str, hlim = displaysize(io)[2])
+    hlim = max(40, floor(Int, hlim * 0.8))
+    (length(str) <= hlim) ? str : string(SubString(str, 1, hlim), "...")
+end
+
+function _show_data_preview(f::Function, io::IO, col)
+    vlim = max(20, displaysize(io)[1])
+    for (i, dat) in enumerate(col)
+        val = string(f(dat))
+        str = _preview(io, val)
+        print(io, "\n[", i, "] \"", str, "\"")
+        if i == vlim
+            print(io, "\n[...]")
+            break
+        end
+    end
+end

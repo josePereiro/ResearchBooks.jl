@@ -1,7 +1,7 @@
 ## ------------------------------------------------------------------
 # USER CONFIG
-const _RBOOK_FILE_NAME = "ResearchBook.toml"
-config_file(bookdir) = joinpath(bookdir, _RBOOK_FILE_NAME)
+_rbook_toml_name() = "ResearchBook.toml"
+config_file(bookdir) = joinpath(bookdir, _rbook_toml_name())
 
 function read_configfile(bookdir)
     cfile = config_file(bookdir)
@@ -9,7 +9,7 @@ function read_configfile(bookdir)
 end
 
 ## ------------------------------------------------------------------
-function find_bookdir(dir0::String)
+function _find_bookdir(dir0::String)
 
     # search up
     root = homedir()

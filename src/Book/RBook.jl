@@ -1,15 +1,17 @@
 ## ------------------------------------------------------------------
 # Book
-RBook(bookdir::String = "") = RBook(bookdir, OrderedDict{String, RBDoc}())
 
 ## ------------------------------------------------------------------
 # Accessors
 parent(b::RBook) = b
-bookdir(b::RBook) = b.dir
-bookdir() = bookdir(currbook())
-documents(b::RBook) = b.docs
+bookdir(b::RBook) = getmeta!(b, :bookdir, "")
+bookdir!(b::RBook, path) = setmeta!(b, :bookdir, path)
+documents(b::RBook) = getdata!(() -> OrderedDict{String, RBDoc}(), b, :docs)
 clearbook!(b::RBook) = empty!(b)
-clearbook!() = empty!(currbook())
+
+## ------------------------------------------------------------------
+# Functional Interface
+bookdir() = bookdir(currbook())
 
 ## ------------------------------------------------------------------
 # OrderedDict
@@ -28,19 +30,28 @@ Base.get!(b::RBook, key::String, default) = get!(documents(b), key, default)
 Base.getindex(b::RBook, idx) = (docs = documents(b); getindex(_values(docs), idx))
 Base.lastindex(b::RBook) = lastindex(_values(documents(b)))
 Base.firstindex(b::RBook) = firstindex(_values(documents(b)))
-Base.iterate(b::RBook) = iterate(documents(b))
-Base.iterate(b::RBook, state) = iterate(documents(b), state)
+Base.iterate(b::RBook) = iterate(_values(documents(b)))
+Base.iterate(b::RBook, state) = iterate(_values(documents(b)), state)
 
 ## ------------------------------------------------------------------
 # Show
 function Base.show(io::IO, b::RBook)
-    println(io, "RBook with ", length(b), " document(s)")
-    println(io, "dir: ", bookdir(b))
-    print(io, "docs:")
-    for (i, key) in enumerate(keys(b))
-        print(io, "\n   \"", key, "\"")
-        if i == _SHOW_LIMIT
-            print(io, "\n...")
+    ndocs = length(b)
+    println(io, "RBook with ", ndocs, " document(s)")
+
+    # meta
+    for meta in [:bookdir]
+        str = getmeta(b, meta, "")
+        if !isempty(str) 
+            println(io, meta, ": \"", _preview(io, str), "\"")
+        end
+    end
+
+    # data
+    if ndocs > 0
+        print(io, "docs:")
+        _show_data_preview(io, b) do doc
+            string(getlabel(doc), ": ", gettitle(doc))
         end
     end
     return nothing

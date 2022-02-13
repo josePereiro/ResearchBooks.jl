@@ -1,4 +1,22 @@
 ## ------------------------------------------------------------------
+# References
+
+# A generalize reference object
+struct RBRef
+
+    bibkey::String
+    author::String
+    year::String
+    title::String
+    doi::String
+
+    dict::AbstractDict 
+end
+struct RBRefs
+    refs::Vector{RBRef}
+end
+
+## ------------------------------------------------------------------
 # Accessors
 references(r::RBRefs) = r.refs
 

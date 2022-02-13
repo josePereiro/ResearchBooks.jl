@@ -1,26 +1,24 @@
 ## ------------------------------------------------------------------
-# Doc
-RBDoc(book::RBook, key::String) = RBDoc(book, key, OrderedDict{String, RBSection}())
+# Meta
+
+getbook(d::RBDoc) = getmeta(d, :book, nothing)
+setbook!(d::RBDoc, book::RBook) = setmeta!(d, :book, book)
+setbook!(d::RBDoc) = setbook!(d, currbook())
+
+getdoi(d::RBDoc) = getmeta(d, :doi, "")
+setdoi!(d::RBDoc, doi::String) = setmeta!(d, :doi, doi)
+
+gettitle(d::RBDoc) = getmeta(d, :title, "")
+settitle!(d::RBDoc, title::String) = setmeta!(d, :title, title)
+
+parent(d::RBDoc) = getbook(d)
+bookdir(d::RBDoc) = bookdir(getbook(d))
 
 ## ------------------------------------------------------------------
-# Accessors
-parent(d::RBDoc) = d.book
-bookdir(d::RBDoc) = bookdir(parent(d))
-sections(d::RBDoc) = d.secs
-dockey(d::RBDoc) = d.key
+# Data
 
-const _DOI_META_KEY = "doi"
-function getdoi(d::RBDoc)
-    meta = get(d, _META_SECTION_KEY, nothing)
-    isnothing(meta) && return ""
-    pairs = collect(RBPair, meta)
-    for (k, v) in pairs
-        (k != _DOI_META_KEY) && continue
-        return _doi_to_url(v)
-    end
-    return ""
-end
-getdoi() = getdoi(currdoc())
+sections(d::RBDoc) = getdata!(() -> OrderedDict{String, RBSection}(), d, :secs)
+hasobj(d::RBDoc, label::String) = haskey(sections(d), label)
 
 ## ------------------------------------------------------------------
 # OrderedDict
@@ -38,51 +36,30 @@ Base.get!(d::RBDoc, key::String, default) = get!(sections(d), key, default)
 Base.getindex(d::RBDoc, idx) = (secs = sections(d); getindex(_values(secs), idx))
 Base.lastindex(d::RBDoc) = lastindex(_values(sections(d)))
 Base.firstindex(d::RBDoc) = firstindex(_values(sections(d)))
-Base.iterate(d::RBDoc) = iterate(sections(d))
-Base.iterate(d::RBDoc, state) = iterate(sections(d), state)
+Base.iterate(d::RBDoc) = iterate(_values(sections(d)))
+Base.iterate(d::RBDoc, state) = iterate(_values(sections(d)), state)
 
 ## ------------------------------------------------------------------
 # show
 function Base.show(io::IO, d::RBDoc)
-    println(io, "RBDoc with ", length(d), " section(s)")
-    println(io, "bookdir: ", bookdir(d))
-    println(io, "dockey: \"", dockey(d), "\"")
-    print(io, "secs:")
-    for (i, key) in enumerate(keys(d))
-        print(io, "\n   \"", key, "\"")
-        if i == _SHOW_LIMIT
-            print(io, "\n...")
+    nsecs = length(d)
+    println(io, "RBDoc with ", nsecs, " section(s)")
+    
+    # meta
+    for meta in [:label, :title, :doi]
+        str = getmeta(d, meta, "")
+        if !isempty(str) 
+            println(io, meta, ": \"", _preview(io, str), "\"")
+        end
+    end
+    
+    # data
+    if nsecs > 0
+        print(io, "section(s):")
+        _show_data_preview(io, d) do sec
+            string(getlabel(sec), ": ", gettitle(sec))
         end
     end
     return nothing
 end
 
-## ------------------------------------------------------------------
-const _META_SECTION_KEY = "Meta"
-function new_document!(dockey::String; kwargs...)
-    
-    # book
-    book = currbook()
-    isnothing(book) && error("No Book selected. See `openbook`.")
-    
-    # Add doc
-    dockey = format_idkey(dockey)
-    doc = RBDoc(book, dockey)
-    book[dockey] = doc
-    currdoc!(doc)
-    
-    # Add Meta section
-    sec = add_section!(doc, _META_SECTION_KEY)
-    for (key, value) in kwargs
-        add_pair!(sec, string(key), value)
-    end
-
-    return doc
-end
-
-# Use a kwargs as input for the dockey
-function new_document!(dockey::Symbol; kwargs...)
-    !haskey(kwargs, dockey) && error("refkey ':$(dockey)' missing!")
-    dockey = string(kwargs[dockey])
-    new_document!(dockey::String; kwargs...)
-end

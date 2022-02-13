@@ -15,7 +15,7 @@ function markdown_str(t::RBTagLine)
     return string("***", t.tag, "***")
 end
 
-function markdown_str(i::RBItem)
+function markdown_str(i::RBObject)
     return string("***'", nameof(i), "' not supported", "***")
 end
 

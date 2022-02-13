@@ -1,22 +1,35 @@
 ## ------------------------------------------------------------------
-macro __GENKEY!__()
-    key = genid("ID_", 8)
-    srcfile = string(__source__.file)
-    callline = __source__.line
+function _macro_call_regex(name::String)
+    str = string("(?>", 
+        "\\@", name, "(?>", "\\([^\\(]*\\)", ")?", 
+    ")")
+    return Regex(str)
+end
 
-    macroreg = r"\@__GENKEY\!__(\(.*\))?"
-    if isfile(srcfile)
-        lines = readlines(srcfile)
-        linestr = lines[callline]
-        nocalls = count(macroreg, linestr)
-        nocalls > 1 && error("More than one @__GENKEY!__ call at the same line $(callline): '$(linestr)'. You must split it.")
-        lines[callline] = replace(linestr, macroreg => string("\"", key, "\""))
-        open(srcfile, "w") do io
+## ------------------------------------------------------------------
+function _replace_line(file::String, line::Int, old, new)
+    if isfile(file)
+        lines = readlines(file)
+        linestr = lines[line]
+        nocalls = count(old, linestr)
+        nocalls > 1 && error("More than one match for `$(old)`` at the same line $(line): '$(linestr)'.")
+        nocalls == 0 && return
+        lines[line] = replace(linestr, old => new)
+        open(file, "w") do io
             for line in lines
                 println(io, line)
             end
         end
     end
+end
 
-    return :($key)
+## ------------------------------------------------------------------
+macro insertlabel!()
+    srcfile = string(__source__.file)
+    callline = __source__.line
+    
+    macroreg = _macro_call_regex("insertlabel!")
+    label = string("\"", genlabel(), "\"")
+    _replace_line(srcfile, callline, macroreg, label)
+    return :($label)
 end

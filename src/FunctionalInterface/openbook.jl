@@ -1,35 +1,32 @@
 ## ------------------------------------------------------------------
-function openbook(dir0::String; reload = false)
+function _openbook(dir0::String; reload = false)
     
     # If cache missed
     book = currbook()
     if isnothing(book)
 
         # bookdir
-        bookdir = find_bookdir(dir0)
-        isempty(bookdir) && error("No '$(_RBOOK_FILE_NAME)' file found in current or any parent directory")
-
+        bdir = _find_bookdir(dir0)
+        isempty(bdir) && error("No '$(_rbook_toml_name())' file found in current or any parent directory!!!")
+        
         # new book
-        book = RBook(bookdir)
+        book = RBook()
+        bookdir!(book, bdir)
         currbook!(book)
     end
 
     # Update book
-    if reload || !_including_flag()
-        try
-            _including_flag!(true)
-            include_rbfiles(; force = reload)
-        finally
-            _including_flag!(false)
-        end
-    end
+    _include_rbfiles(; force = reload)
 
     return book
 end
+openbook(;reload = false) = _openbook(pwd(); reload)
+
 
 # TODO: reload force option
 macro openbook()
-    __file__ = string(__source__.file)
-    openbook(dirname(__file__); reload = false)
-    return :(nothing)
+    src = srcfile(__source__)
+    src = isfile(src) ? src : pwd()
+    book = _openbook(dirname(src); reload = false)
+    return book
 end

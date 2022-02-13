@@ -52,5 +52,5 @@ function _newer(f1::String, f2::String)
 end
 
 ## ------------------------------------------------------------------
-genid(prefix::String, n::Int = 8) = string(prefix, randstring(n))
-genid(n::Int = 8) = randstring(n)
+genlabel(prefix::String, n::Int = 8) = string(prefix, randstring(n))
+genlabel(n::Int = 8) = randstring(n)
