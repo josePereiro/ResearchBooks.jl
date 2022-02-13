@@ -24,12 +24,13 @@ function _replace_line(file::String, line::Int, old, new)
 end
 
 ## ------------------------------------------------------------------
-macro insertlabel!()
+macro genlabel!()
     srcfile = string(__source__.file)
     callline = __source__.line
     
-    macroreg = _macro_call_regex("insertlabel!")
-    label = string("\"", genlabel(), "\"")
-    _replace_line(srcfile, callline, macroreg, label)
+    macroreg = _macro_call_regex("genlabel!")
+    label = genlabel()
+    rep = string("\"", genlabel(), "\"")
+    _replace_line(srcfile, callline, macroreg, rep)
     return :($label)
 end

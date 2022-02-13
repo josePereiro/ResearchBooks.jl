@@ -1,5 +1,5 @@
 ## ------------------------------------------------------------------
-function _new_section!(srcfile, label)
+function _new_quote!(srcfile, label)
     
     # TODO: Update book but just if necessary
     # _include_rbfiles()
@@ -7,34 +7,34 @@ function _new_section!(srcfile, label)
     # TODO: Check we are in book file
 
     # book
-    doc = currdoc()
-    isnothing(doc) && error("No Doc selected. See `currdoc` help.")
+    sec = currsec()
+    isnothing(sec) && error("No Sec selected. See `currdoc` help.")
 
-    sec = RBSection(label)
-    setdoc!(sec, doc)
+    obj = RBQuote(label)
+    setsec!(obj, sec)
 
-    push!(doc, label => sec)
+    push!(sec, label => obj)
 
-    currsec!(sec)
+    currobj!(obj)
 end
 
 
 ## ------------------------------------------------------------------
-macro new_section!(ex...)
+macro new_quote!(ex...)
     srcfile = string(__source__.file)
     callline = __source__.line
 
     if isempty(ex)
         # Insert random label
-        macroreg = _macro_call_regex("new_section!")
+        macroreg = _macro_call_regex("new_quote!")
         label = genlabel()
-        newcall = string("@new_section!(\"", label, "\")")
+        newcall = string("@new_quote!(\"", label, "\")")
         _replace_line(srcfile, callline, macroreg, newcall)
     elseif length(ex) == 1 && first(ex) isa String
         label = string(first(ex))
     else
         error("Too many arguments!. Expected either 0 or 1.")
     end
-    _new_section!(srcfile, label)
+    _new_quote!(srcfile, label)
 end
 

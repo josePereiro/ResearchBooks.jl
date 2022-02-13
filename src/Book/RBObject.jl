@@ -23,10 +23,12 @@ for sym in [:meta, :data]
 end
 
 ## ------------------------------------------------------------------
-# common meta
-setlabel!(obj::RBObject, label) = setmeta!(obj, :label, string(label))
-getlabel(obj::RBObject) = getmeta(obj, :label, "")
-
+# common metas
 srcfile!(obj::RBObject, file) = setmeta!(obj, :srcfile, file)
 srcfile(obj::RBObject) = getmeta(obj, :srcfile, "")
 
+getparent(obj::RBObject) = getmeta(obj, :parent, nothing)
+setparent!(obj::RBObject, parent::RBObject) = setmeta!(obj, :parent, parent)
+
+getbook(d::RBObject) = getbook(getparent(d))
+bookdir(q::RBObject) = bookdir(getbook(q))

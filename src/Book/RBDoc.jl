@@ -1,18 +1,14 @@
 ## ------------------------------------------------------------------
 # Meta
 
-getbook(d::RBDoc) = getmeta(d, :book, nothing)
-setbook!(d::RBDoc, book::RBook) = setmeta!(d, :book, book)
-setbook!(d::RBDoc) = setbook!(d, currbook())
+getbook(d::RBDoc) = getparent(d)
+setbook!(d::RBDoc, book::RBook) = setparent!(d, book)
 
 getdoi(d::RBDoc) = getmeta(d, :doi, "")
 setdoi!(d::RBDoc, doi::String) = setmeta!(d, :doi, doi)
 
 gettitle(d::RBDoc) = getmeta(d, :title, "")
 settitle!(d::RBDoc, title::String) = setmeta!(d, :title, title)
-
-parent(d::RBDoc) = getbook(d)
-bookdir(d::RBDoc) = bookdir(getbook(d))
 
 ## ------------------------------------------------------------------
 # Data
@@ -43,10 +39,10 @@ Base.iterate(d::RBDoc, state) = iterate(_values(sections(d)), state)
 # show
 function Base.show(io::IO, d::RBDoc)
     nsecs = length(d)
-    println(io, "RBDoc with ", nsecs, " section(s)")
+    println(io, "RBDoc(\"", getlabel(d), "\") with ", nsecs, " section(s)")
     
     # meta
-    for meta in [:label, :title, :doi]
+    for meta in [:title, :doi]
         str = getmeta(d, meta, "")
         if !isempty(str) 
             println(io, meta, ": \"", _preview(io, str), "\"")
@@ -63,3 +59,6 @@ function Base.show(io::IO, d::RBDoc)
     return nothing
 end
 
+## ------------------------------------------------------------------
+# Functional Interface
+setbook!(d::RBDoc) = setbook!(d, currbook())

@@ -1,17 +1,20 @@
 ## ------------------------------------------------------------------
 # Book
 
-## ------------------------------------------------------------------
-# Accessors
-parent(b::RBook) = b
-bookdir(b::RBook) = getmeta!(b, :bookdir, "")
-bookdir!(b::RBook, path) = setmeta!(b, :bookdir, path)
-documents(b::RBook) = getdata!(() -> OrderedDict{String, RBDoc}(), b, :docs)
-clearbook!(b::RBook) = empty!(b)
+# The top book has no label
+RBook() = RBook("")
 
 ## ------------------------------------------------------------------
-# Functional Interface
-bookdir() = bookdir(currbook())
+# Meta
+getparent(b::RBook) = b
+getbook(b::RBook) = b
+
+bookdir(b::RBook) = getmeta!(b, :bookdir, "")
+bookdir!(b::RBook, path::String) = setmeta!(b, :bookdir, path)
+
+## ------------------------------------------------------------------
+# Data
+documents(b::RBook) = getdata!(() -> OrderedDict{String, RBDoc}(), b, :docs)
 
 ## ------------------------------------------------------------------
 # OrderedDict
@@ -56,3 +59,7 @@ function Base.show(io::IO, b::RBook)
     end
     return nothing
 end
+
+## ------------------------------------------------------------------
+# Functional Interface
+bookdir() = bookdir(currbook())

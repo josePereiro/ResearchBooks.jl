@@ -10,18 +10,27 @@ macro RBObject(name)
     isdefined(Main, name) && return :(nothing)
     return quote
         struct $(name) <: RBObject
+            label::String
             meta::OrderedDict{Symbol, Any}
             data::OrderedDict{Symbol, Any}
         end
 
-        function $(esc(name))()
-            $(esc(name))(OrderedDict{Symbol, Any}(), OrderedDict{Symbol, Any}())
+        function $(esc(name))(label::String)
+            $(esc(name))(label, OrderedDict{Symbol, Any}(), OrderedDict{Symbol, Any}())
         end
 
         $(esc(:getmeta))(obj::$(esc(name))) = obj.meta
         $(esc(:getdata))(obj::$(esc(name))) = obj.data
+        $(esc(:getlabel))(obj::$(esc(name))) = obj.label
     end
 end
+
+"""
+    A Collection of RBObjects which share some metadata
+"""
+RBQuote
+
+@RBObject RBQuote
 
 # mutable struct RBNote <: RBObject
 #     meta::Dict
@@ -32,11 +41,6 @@ end
 #     sec
 #     key::String
 #     val::T
-# end
-
-# mutable struct RBQuote <: RBObject
-#     sec
-#     txt::String
 # end
 
 # mutable struct RBTagLine <: RBObject

@@ -10,10 +10,9 @@ function _new_document!(srcfile, label)
     book = currbook()
     isnothing(book) && error("No Book selected. See `@openbook` help.")
 
-    doc = RBDoc()
+    doc = RBDoc(label)
     setbook!(doc, book)
     srcfile!(doc, srcfile)
-    setlabel!(doc, label)
 
     push!(book, label => doc)
 

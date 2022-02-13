@@ -22,7 +22,7 @@ module ResearchBooks
     include("Book/RBook.jl")
     # include("Book/RBNote.jl")
     # include("Book/RBPair.jl")
-    # include("Book/RBQuote.jl")
+    include("Book/RBQuote.jl")
     # include("Book/RBTagLine.jl")
     # include("Book/RBRefs.jl")
     # include("Book/RBRef.jl")
@@ -30,10 +30,7 @@ module ResearchBooks
     
     export RBook, RBDoc, RBSection
     export RBObject, RBNote, RBPair, RBQuote, RBTagLine
-    export new_document!, new_section!
-    export add_section!, add_note!, add_pair!, add_quote!
-    export seclink
-    export openbook, @openbook
+    export getbook, bookdir, getlabel
     export @create_doc_readme
     export getdoi, getyear, getauthor, gettitle
     export references
@@ -44,15 +41,20 @@ module ResearchBooks
     include("FunctionalInterface/replace_marcos.jl")
     include("FunctionalInterface/new_document.jl")
     include("FunctionalInterface/new_section.jl")
+    include("FunctionalInterface/new_quote.jl")
     include("FunctionalInterface/setmeta.jl")
     include("FunctionalInterface/utils.jl")
     
     export currdoc, currdoc!
     export currsec, currsec!
+    export currobj, currobj!
     export currbook, currbook!
     export bookdir
     export is_ipass0, is_ipass1, is_ipass2, get_ipass
-    export @insertlabel!, @new_document!, @setmeta!, @new_section!
+    export @genlabel!, @new_document!, @new_quote!
+    export @setmeta!, @new_section!, @settitle!, @setdoi!, @settxt!
+    export openbook, @openbook
+
     
     include("Core/filesys.jl")
     include("Core/bookbib.jl")

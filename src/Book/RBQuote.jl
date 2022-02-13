@@ -1,20 +1,18 @@
+## ------------------------------------------------------------------
+# Meta
+
+getsec(q::RBQuote) = getparent(q)
+setsec!(q::RBQuote, sec::RBSection) = setparent!(q, sec)
+
+## ------------------------------------------------------------------
+gettxt(q::RBQuote) = getdata(q, :txt, "")
+settxt!(q::RBQuote, txt::String) = setdata!(q, :txt, txt)
 
 ## ------------------------------------------------------------------
 # show
 function Base.show(io::IO, q::RBQuote)
-    print(io, "RBQuote: \"", q.txt, "\"")
+    println(io, "RBQuote")
+    println("label: \"", getlabel(q), "\"")
+    print("txt:\n\"", gettxt(q), "\"")
 end
 
-## ------------------------------------------------------------------
-function add_quote!(sec::RBSection, txt::String)
-    note = RBQuote(sec, txt)
-    push!(sec, note)
-end
-function add_quote!(txt::String, txts::String...) 
-    sec = currsec()
-    add_quote!(sec, txt)
-    for txti in txts
-        add_quote!(sec, txti)
-    end
-    return sec
-end
