@@ -47,5 +47,4 @@ end
 
 ## ------------------------------------------------------------------
 # Functional Interface
-bookdir() = bookdir(currbook())
 bookbib() = bookbib(bookdir())

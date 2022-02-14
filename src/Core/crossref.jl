@@ -2,7 +2,6 @@
 _crossref_meta_dir() = joinpath(depotdir(), ".crossref")
 
 function _download_crossref_meta(doi; dir = pwd(), force = false)
-    # name = string(_format_doi_for_filename(doi), ".json")
     name = string(_format_doi_for_filename(doi), ".json")
     outpath = joinpath(dir, name)
     force && rm(outpath; force)
@@ -63,39 +62,36 @@ function _crossref_entry_title(ref::AbstractDict)
     return ""
 end
 
+function _format_crossref_data!(ref::Dict)
+    
+    # clear content
+    # doi
+    if haskey(ref, "DOI")
+        doistr = _doi_to_url(ref["DOI"])
+        !isempty(doistr) && (ref["DOI"] = doistr)
+    end
+
+    for (key, val) in ref
+        ref[key] = _clear_bibtex_entry(val)
+    end
+end
+
 function _crossref_to_rbref(ref::AbstractDict)
+    _format_crossref_data!(ref)
     bibkey = ""
     author = _crossref_entry_author(ref)
     year = _crossref_entry_year(ref)
     title = _crossref_entry_title(ref)
-    doi = _doi_to_url(_crossref_entry_doi(ref))
+    doi = _crossref_entry_doi(ref)
     return RBRef(bibkey, author, year, title, doi, ref)
 end
 
 ## ------------------------------------------------------------------
-function crossrefs(doi::String = get_doi(); force = false)
+function crossrefs(doi::String; force = false)
     ref_dicts = _crossref_references(doi; force)
     refs = RBRef[]
     for dict in ref_dicts
         push!(refs, _crossref_to_rbref(dict))
     end
     return RBRefs(refs)
-end
-
-## ------------------------------------------------------------------
-# find
-
-function findall_crossrefs(qp, qps...) 
-    vec = references(crossrefs())
-    findall_match(vec, qp, qps...)
-end
-
-function findfirst_crossrefs(qp, qps...) 
-    vec = references(crossrefs())
-    findfirst_match(vec, qp, qps...)
-end
-
-function filter_crossrefs(qp, qps...)
-    vec = references(crossrefs())
-    filter_match(vec, qp, qps...)
 end

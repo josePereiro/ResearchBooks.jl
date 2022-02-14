@@ -13,7 +13,12 @@ set_text!(q::RBParagraph, txt::String) = set_data!(q, :txt, txt)
 
 ## ------------------------------------------------------------------
 # show
-function Base.show(io::IO, q::RBParagraph)
-    println(io, "RBParagraph(\"", get_label(q), "\")")
-    print(io, "txt:\n\"", _preview(io, get_text(q)), "\"")
+function Base.show(io::IO, p::RBParagraph)
+    println(io, _preview(io, "-"^70))
+    println(io, "RBParagraph(\"", get_label(p), "\")")
+    print(io, "path: '", get_relpath(p), "'")
+    txt = get_text(p)
+    !isempty(txt) && print(io, "\n   txt: \"", _preview(io, txt), "\"")
+    tags = join(get_tags(p), ", ")
+    !isempty(tags) && print(io, "\n   tags: \"", _preview(io, tags), "\"")
 end

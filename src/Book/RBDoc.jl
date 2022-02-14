@@ -53,7 +53,9 @@ Base.iterate(d::RBDoc, state) = iterate(_values(sections(d)), state)
 # show
 function Base.show(io::IO, d::RBDoc)
     nsecs = length(d)
+    println(io, _preview(io, "-"^70))
     println(io, "RBDoc(\"", get_label(d), "\") with ", nsecs, " section(s)")
+    println(io, "path: '", get_relpath(d), "'")
     
     # meta
     for meta in [:title, :doi]

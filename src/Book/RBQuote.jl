@@ -13,7 +13,9 @@ set_text!(q::RBQuote, txt::String) = set_data!(q, :txt, txt)
 ## ------------------------------------------------------------------
 # show
 function Base.show(io::IO, q::RBQuote)
-    print(io, "RBQuote(\"", get_label(q), "\")")
+    println(io, _preview(io, "-"^70))
+    println(io, "RBQuote(\"", get_label(q), "\")")
+    print(io, "path: '", get_relpath(q), "'")
     txt = get_text(q)
     !isempty(txt) && print(io, "\n   txt: \"", _preview(io, txt), "\"")
     tags = join(get_tags(q), ", ")

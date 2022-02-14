@@ -38,3 +38,13 @@ bookdir(q::RBObject) = bookdir(get_book(q))
 
 get_tags(obj::RBObject) = get_meta!(obj, :tags, Set{String}())
 add_tag!(obj::RBObject,  t::String, ts::String...) = (_push_csv!(get_tags(obj), t, ts...); obj)
+
+function get_path(obj::RBObject; rel = false)
+    file = srcfile(obj)
+    file = rel ? relpath(file) : file
+    line = srcline(obj)
+    linestr = (line == -1) ? "" : string(":", line)
+    return string(file, linestr)
+end
+
+get_relpath(obj::RBObject) = get_path(obj; rel = true)

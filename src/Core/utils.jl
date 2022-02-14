@@ -35,3 +35,27 @@ function _find_key(dict::AbstractDict, keys::Vector)
     return dict
 end
 
+function _till_unchanged(f::Function, str0)
+    str0 = string(str0)
+    while true
+        str = f(str0)::String
+        (str == str0) && return str
+        str0 = str
+    end
+end
+
+const _CLEAR_BIBTEX_ENTRY_STRIP_SET = ['{', '}', '\n', ' ', ',', ';']
+function _clear_bibtex_entry(str0::String)
+    return _till_unchanged(str0) do str
+        str = strip(str, _CLEAR_BIBTEX_ENTRY_STRIP_SET)
+        str = replace(str, "{" => "")
+        str = replace(str, "}" => "")
+        str = replace(str, "\\" => "")
+        str = replace(str, " ," => ",")
+        str = replace(str, "`" => "")
+        str = replace(str, "'" => "")
+        str = replace(str, "  " => " ")
+        str = replace(str, "\"" => "")
+        return str
+    end
+end

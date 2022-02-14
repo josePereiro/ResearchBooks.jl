@@ -41,6 +41,7 @@ Base.iterate(b::RBook, state) = iterate(_values(documents(b)), state)
 # Show
 function Base.show(io::IO, b::RBook)
     ndocs = length(b)
+    println(io, _preview(io, "-"^70))
     println(io, "RBook with ", ndocs, " document(s)")
 
     # meta
@@ -61,3 +62,19 @@ function Base.show(io::IO, b::RBook)
     return nothing
 end
 
+## ------------------------------------------------------------------
+function eachobj(book::RBook)
+    ch = Channel{RBObject}(1) do ch_
+        for doc in book
+            put!(ch_, doc)
+            for sec in doc
+                put!(ch_, sec)
+                for obj in sec
+                    put!(ch_, obj)
+                end
+            end
+        end
+    end
+
+    return (obj for obj in ch)
+end

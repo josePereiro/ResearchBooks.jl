@@ -36,7 +36,9 @@ Base.iterate(s::RBSection, state) = iterate(_values(items(s)), state)
 # Show
 function Base.show(io::IO, s::RBSection)
     nobjs = length(s)
+    println(io, _preview(io, "-"^70))
     println(io, "RBSection(\"", get_label(s), "\") with ", nobjs, " object(s)")
+    println(io, "path: '", get_relpath(s), "'")
     
     # meta
     for meta in [:title]
