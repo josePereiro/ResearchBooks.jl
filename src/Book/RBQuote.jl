@@ -1,18 +1,22 @@
 ## ------------------------------------------------------------------
 # Meta
 
-getsec(q::RBQuote) = getparent(q)
-setsec!(q::RBQuote, sec::RBSection) = setparent!(q, sec)
+get_sec!(q::RBQuote) = get_parent(q)
+set_sec!(q::RBQuote, sec::RBSection) = set_parent!(q, sec)
 
 ## ------------------------------------------------------------------
-gettxt(q::RBQuote) = getdata(q, :txt, "")
-settxt!(q::RBQuote, txt::String) = setdata!(q, :txt, txt)
+# Data
+
+get_text(q::RBQuote) = get_data(q, :txt, "")
+set_text!(q::RBQuote, txt::String) = set_data!(q, :txt, txt)
 
 ## ------------------------------------------------------------------
 # show
 function Base.show(io::IO, q::RBQuote)
-    println(io, "RBQuote")
-    println("label: \"", getlabel(q), "\"")
-    print("txt:\n\"", gettxt(q), "\"")
+    print(io, "RBQuote(\"", get_label(q), "\")")
+    txt = get_text(q)
+    !isempty(txt) && print(io, "\n   txt: \"", _preview(io, txt), "\"")
+    tags = join(get_tags(q), ", ")
+    !isempty(tags) && print(io, "\n   tags: \"", _preview(io, tags), "\"")
+    return nothing
 end
-

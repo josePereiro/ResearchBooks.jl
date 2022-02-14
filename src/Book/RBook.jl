@@ -6,15 +6,16 @@ RBook() = RBook("")
 
 ## ------------------------------------------------------------------
 # Meta
-getparent(b::RBook) = b
-getbook(b::RBook) = b
+get_parent(b::RBook) = b
+get_book(b::RBook) = b
 
-bookdir(b::RBook) = getmeta!(b, :bookdir, "")
-bookdir!(b::RBook, path::String) = setmeta!(b, :bookdir, path)
+bookdir(b::RBook) = get_meta!(b, :bookdir, "")
+bookdir!(b::RBook, path::String) = set_meta!(b, :bookdir, realpath(path))
 
 ## ------------------------------------------------------------------
 # Data
-documents(b::RBook) = getdata!(() -> OrderedDict{String, RBDoc}(), b, :docs)
+documents(b::RBook) = get_data!(() -> OrderedDict{String, RBDoc}(), b, :docs)
+hasobj(d::RBook, label::String) = haskey(documents(d), label)
 
 ## ------------------------------------------------------------------
 # OrderedDict
@@ -44,7 +45,7 @@ function Base.show(io::IO, b::RBook)
 
     # meta
     for meta in [:bookdir]
-        str = getmeta(b, meta, "")
+        str = get_meta(b, meta, "")
         if !isempty(str) 
             println(io, meta, ": \"", _preview(io, str), "\"")
         end
@@ -54,12 +55,9 @@ function Base.show(io::IO, b::RBook)
     if ndocs > 0
         print(io, "docs:")
         _show_data_preview(io, b) do doc
-            string(getlabel(doc), ": ", gettitle(doc))
+            string("[", get_label(doc), "] ", get_title(doc))
         end
     end
     return nothing
 end
 
-## ------------------------------------------------------------------
-# Functional Interface
-bookdir() = bookdir(currbook())

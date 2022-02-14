@@ -52,7 +52,6 @@ function bookbib(bookdir::String)
     refs = _bookbib_to_rbref.(values(_BOOKBIB))
     return RBRefs(refs)
 end
-bookbib() = bookbib(bookdir())
 
 ## ----------------------------------------------------------------------------
 # find
@@ -61,17 +60,21 @@ function findall_bookbib(bookdir::String, qp, qps...)
     vec = references(bookbib(bookdir))
     findall_match(vec, qp, qps...)
 end
-findall_bookbib(qp, qps...) = findall_bookbib(bookdir(), qp, qps...)
+
 
 function findfirst_bookbib(bookdir::String, qp, qps...) 
     vec = references(bookbib(bookdir))
     findfirst_match(vec, qp, qps...)
 end
-findfirst_bookbib(qp, qps...) = findfirst_bookbib(bookdir(), qp, qps...)
 
 function filter_bookbib(bookdir::String, qp, qps...) 
     vec = references(bookbib(bookdir))
     filter_match(vec, qp, qps...)
 end
+
+## ----------------------------------------------------------------------------
+# Functional interface
+findall_bookbib(qp, qps...) = findall_bookbib(bookdir(), qp, qps...)
+findfirst_bookbib(qp, qps...) = findfirst_bookbib(bookdir(), qp, qps...)
 filter_bookbib(qp, qps...) = filter_bookbib(bookdir(), qp, qps...)
 

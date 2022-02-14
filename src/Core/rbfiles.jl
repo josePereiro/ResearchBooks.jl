@@ -1,21 +1,20 @@
 ## ------------------------------------------------------------------
-const _INCLUDING_PASS_KEY = "including_pass"
-_set_ipass!(pass) = (GLOB_STATE[_INCLUDING_PASS_KEY] = pass)
-get_ipass() = get!(GLOB_STATE, _INCLUDING_PASS_KEY, 0)
+_set_ipass!(pass::Int) = setindex!(GLOB_STATE, pass, :ipass)
+get_ipass() = get!(GLOB_STATE, :ipass, 0)
 is_ipass0() = (get_ipass() == 0)
 is_ipass1() = (get_ipass() == 1)
 is_ipass2() = (get_ipass() == 2)
 
 _keepout_git(path) = (basename(path) == ".git")
 
-const _RBFILE_SUFFIX = ".rb.jl"
-_is_rbfile(path) = endswith(path, _RBFILE_SUFFIX)
+_rbfile_suffix() = ".rb.jl"
+_is_rbfile(path) = endswith(path, _rbfile_suffix())
 
-const _INCLUDE_ORDER_CONFIG_KEY = "include-order"
 
+_include_order_configkey() = "include-order"
 function include_order(bookdir)
     config = read_configfile(bookdir)
-    order = get(config, _INCLUDE_ORDER_CONFIG_KEY, "")
+    order = get(config, _include_order_configkey(), "")
     order = (order isa String) ? [order] : order
     return bookdir_relpath.(order)
 end
@@ -33,7 +32,7 @@ function _include_rdfile(path; force = false)
     return false
 end
 
-function _include_rbfiles(; force = false)
+function _include_rbfiles!(book::RBook; force = false)
 
     # TODO: for now including all files every time
     # A no-action-required mechanism must be provided
@@ -41,7 +40,6 @@ function _include_rbfiles(; force = false)
 
     if is_ipass0()
         try
-            book = currbook()
             empty!(book)
             bdir = bookdir(book)
             

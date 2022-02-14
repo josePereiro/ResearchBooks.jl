@@ -73,7 +73,7 @@ function _crossref_to_rbref(ref::AbstractDict)
 end
 
 ## ------------------------------------------------------------------
-function crossrefs(doi::String = getdoi(); force = false)
+function crossrefs(doi::String = get_doi(); force = false)
     ref_dicts = _crossref_references(doi; force)
     refs = RBRef[]
     for dict in ref_dicts

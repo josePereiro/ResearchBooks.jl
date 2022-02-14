@@ -1,3 +1,5 @@
+## ----------------------------------------------------------------------------
+# Functional interface
 function _open_src_libs(cmd = "code")
     for path in bibtex_paths()
         !isfile(path) && continue

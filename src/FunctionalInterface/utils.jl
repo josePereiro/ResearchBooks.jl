@@ -1,11 +1,5 @@
 srcfile(src::LineNumberNode) = abspath(string(src.file))
-
-# Check currbook is something
-function _check_currbook()
-    book = currbook()
-    isnothing(book) && error("No Book selected. See `openbook`.")
-    return book
-end
+srcline(src::LineNumberNode) = src.line
 
 function _check_file(obj, srcnode)
 

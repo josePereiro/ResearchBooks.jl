@@ -19,34 +19,17 @@ macro RBObject(name)
             $(esc(name))(label, OrderedDict{Symbol, Any}(), OrderedDict{Symbol, Any}())
         end
 
-        $(esc(:getmeta))(obj::$(esc(name))) = obj.meta
-        $(esc(:getdata))(obj::$(esc(name))) = obj.data
-        $(esc(:getlabel))(obj::$(esc(name))) = obj.label
+        # RBObject Interface
+        $(esc(:get_meta))(obj::$(esc(name))) = obj.meta
+        $(esc(:get_data))(obj::$(esc(name))) = obj.data
+        $(esc(:get_label))(obj::$(esc(name))) = obj.label
     end
 end
 
-"""
-    A Collection of RBObjects which share some metadata
-"""
-RBQuote
-
+## ------------------------------------------------------------------
+# Items
 @RBObject RBQuote
-
-# mutable struct RBNote <: RBObject
-#     meta::Dict
-#     data::Dict
-# end
-
-# mutable struct RBPair{T} <: RBObject
-#     sec
-#     key::String
-#     val::T
-# end
-
-# mutable struct RBTagLine <: RBObject
-#     sec
-#     tags::Vector{String}
-# end
+@RBObject RBParagraph
 
 ## ------------------------------------------------------------------
 # Section

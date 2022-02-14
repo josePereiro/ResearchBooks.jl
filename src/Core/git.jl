@@ -1,4 +1,6 @@
-function _push_book(cmd = "git")
+## ----------------------------------------------------------------------------
+# Functional interface
+function _push_book(;cmd = "git")
     broot = bookdir()
     if isdir(broot)
         run(`$(cmd) -C $(broot) add .`; wait = true)

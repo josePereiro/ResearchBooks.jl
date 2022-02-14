@@ -18,10 +18,26 @@ function _show_data_preview(f::Function, io::IO, col)
     for (i, dat) in enumerate(col)
         val = string(f(dat))
         str = _preview(io, val)
-        print(io, "\n[", i, "] \"", str, "\"")
+        print(io, "\n[", i, "] ", str)
         if i == vlim
             print(io, "\n[...]")
             break
         end
     end
+end
+
+function _push_csv!(col, str::String)
+    vals = split(str, ",", keepempty = false)
+    for vali in vals
+        push!(col, strip(vali))
+    end
+    return col
+end
+
+function _push_csv!(col, str::String, strs::String...)
+    _push_csv!(col, str)
+    for stri in strs
+        _push_csv!(col, stri)
+    end
+    return col
 end

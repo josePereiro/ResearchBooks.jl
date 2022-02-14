@@ -20,7 +20,7 @@ module ResearchBooks
     include("Book/RBDoc.jl")
     include("Book/RBSection.jl")
     include("Book/RBook.jl")
-    # include("Book/RBNote.jl")
+    include("Book/RBParagraph.jl")
     # include("Book/RBPair.jl")
     include("Book/RBQuote.jl")
     # include("Book/RBTagLine.jl")
@@ -30,33 +30,40 @@ module ResearchBooks
     
     export RBook, RBDoc, RBSection
     export RBObject, RBNote, RBPair, RBQuote, RBTagLine
-    export getbook, bookdir, getlabel
+    export get_book, bookdir, get_label
     export @create_doc_readme
-    export getdoi, getyear, getauthor, gettitle
+    export get_doi, getyear, getauthor, get_title
     export references
     
     include("FunctionalInterface/openbook.jl")
     include("FunctionalInterface/glob_state.jl")
     # include("FunctionalInterface/markdown.jl")
-    include("FunctionalInterface/replace_marcos.jl")
-    include("FunctionalInterface/new_document.jl")
-    include("FunctionalInterface/new_section.jl")
-    include("FunctionalInterface/new_quote.jl")
-    include("FunctionalInterface/setmeta.jl")
+    include("FunctionalInterface/replace_macros.jl")
+    include("FunctionalInterface/genlabel.jl")
+    include("FunctionalInterface/RBDoc_macros.jl")
+    include("FunctionalInterface/RBSection_macros.jl")
+    include("FunctionalInterface/RBQuote_macros.jl")
+    include("FunctionalInterface/RBParagraph_macros.jl")
+    include("FunctionalInterface/newobj_macros.jl")
+    include("FunctionalInterface/setmeta_macros.jl")
     include("FunctionalInterface/utils.jl")
+    include("FunctionalInterface/filesys.jl")
     
     export currdoc, currdoc!
     export currsec, currsec!
     export currobj, currobj!
     export currbook, currbook!
-    export bookdir
+    export bookdir, srcline, srcfile
     export is_ipass0, is_ipass1, is_ipass2, get_ipass
-    export @genlabel!, @new_document!, @new_quote!
-    export @setmeta!, @new_section!, @settitle!, @setdoi!, @settxt!
+    export @genlabel!
     export openbook, @openbook
+    export @new_document!, @new_section!
+    export @new_paragraph!, @new_quote!
+    export @set_meta!, @set_title!, @set_doi!, @set_text!
+    export @set_author!, @set_year!, @set_bibkey!, @set_abstract!
+    export @add_tag!, @add_read!
 
     
-    include("Core/filesys.jl")
     include("Core/bookbib.jl")
     include("Core/crossref.jl")
     include("Core/git.jl")

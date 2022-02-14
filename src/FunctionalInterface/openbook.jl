@@ -16,7 +16,7 @@ function _openbook(dir0::String; reload = false)
     end
 
     # Update book
-    _include_rbfiles(; force = reload)
+    _include_rbfiles!(book; force = reload)
 
     return book
 end

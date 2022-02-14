@@ -35,22 +35,3 @@ function _find_key(dict::AbstractDict, keys::Vector)
     return dict
 end
 
-# case insensitive get
-function _get_non_Aa(dict, skey, dfl)
-    skey = lowercase(skey)
-    for (dkey, val) in dict
-        (skey == lowercase(dkey)) && return val
-    end
-    return dfl
-end
-
-# Returns the newer file
-function _newer(f1::String, f2::String)
-    t1 = mtime(f1)
-    t2 = mtime(f2)
-    return t1 > t2 ? f1 : f2
-end
-
-## ------------------------------------------------------------------
-genlabel(prefix::String, n::Int = 8) = string(prefix, randstring(n))
-genlabel(n::Int = 8) = randstring(n)
