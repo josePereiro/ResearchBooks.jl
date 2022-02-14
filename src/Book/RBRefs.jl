@@ -61,4 +61,6 @@ function findall_refs(r::RBRefs, q, qs...)
 
 end
 
+## ------------------------------------------------------------------
+# Functional Interface
 findall_refs(q, qs...) = findall_refs(references(), q, qs...)

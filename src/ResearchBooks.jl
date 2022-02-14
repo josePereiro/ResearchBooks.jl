@@ -21,15 +21,14 @@ module ResearchBooks
     include("Book/RBSection.jl")
     include("Book/RBook.jl")
     include("Book/RBParagraph.jl")
-    # include("Book/RBPair.jl")
     include("Book/RBQuote.jl")
-    # include("Book/RBTagLine.jl")
-    # include("Book/RBRefs.jl")
-    # include("Book/RBRef.jl")
+    include("Book/RBRefs.jl")
+    include("Book/RBRef.jl")
     include("Book/utils.jl")
     
     export RBook, RBDoc, RBSection
     export RBObject, RBNote, RBPair, RBQuote, RBTagLine
+    export RBRef, RBRefs
     export get_book, bookdir, get_label
     export @create_doc_readme
     export get_doi, getyear, getauthor, get_title
@@ -72,9 +71,9 @@ module ResearchBooks
     include("Core/rbfiles.jl")
     include("Core/utils.jl")
 
-    # export bookbib, findall_bookbib, findfirst_bookbib, filter_bookbib
-    # export crossrefs, findall_crossrefs, findfirst_crossrefs, filter_crossrefs
-    # export genlabel
+    export bookbib, findall_bookbib, findfirst_bookbib, filter_bookbib
+    export crossrefs, findall_crossrefs, findfirst_crossrefs, filter_crossrefs
+    export @genlabel
     
 
     # include("ReadReport/dirtree.jl")
