@@ -1,4 +1,4 @@
-function _set_meta!(callinfo, ex)
+function _setproperty!(callinfo, ex)
 
     # obj
     obj = _check_currobj()
@@ -15,7 +15,7 @@ function _set_meta!(callinfo, ex)
     for (key, val) in meta
         exout = quote 
             $(exout)
-            ResearchBooks.set_meta!($(obj), $(Meta.quot(key)), $(esc(val)))
+            ResearchBooks.setproperty!($(obj), $(Meta.quot(key)), $(esc(val)))
         end
     end
     return quote 
@@ -25,8 +25,8 @@ end
 
 ## ------------------------------------------------------------------
 # Meta setters
-macro set_meta!(ex...)
-    _set_meta!(__source__, ex)
+macro setproperty!(ex...)
+    _setproperty!(__source__, ex)
 end
 
 macro set_title!(ex::String)

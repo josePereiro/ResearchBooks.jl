@@ -18,16 +18,19 @@ end
 bookbib_file(bookdir) = joinpath(bookdir, "bookbib.toml")
 clear_bookbib_file(bookdir) = rm(bookbib_file(bookdir); force = true)
 
-function _bookbib_to_rbref(ref::AbstractDict)
+function _bookbib_to_rbref(refdict::AbstractDict)
+
+    ref = RBRef()
 
     # add custom
-    bibkey = get(ref, "bibkey", "")
-    author = get(ref, "author", "")
-    year = get(ref, "year", "")
-    title = get(ref, "title", "")
-    doi = _doi_to_url(get(ref, "doi", ""))
+    ref.bibkey = get(refdict, "bibkey", "")
+    ref.author = get(refdict, "author", "")
+    ref.year = get(refdict, "year", "")
+    ref.title = get(refdict, "title", "")
+    ref.doi = _doi_to_url(get(refdict, "doi", ""))
+    ref.dict = refdict
     
-    return RBRef(bibkey, author, year, title, doi, ref)
+    return ref
 end
 
 function _format_BOOKBIB!()
@@ -84,9 +87,9 @@ function bookbib(bookdir::String)
     # reset listener of tomlfile
     update!(_BOOKBIB_MTIME_EVENT, tomlfile)
 
-    # return RBRefs
-    refs = _bookbib_to_rbref.(values(_BOOKBIB))
-    return RBRefs(refs)
+    # return RBRefList
+    refs = _bookbib_to_rbref.(values(_BOOKBIB)) 
+    return RBRefList(refs)
 end
 
 ## ----------------------------------------------------------------------------

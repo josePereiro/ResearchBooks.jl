@@ -30,7 +30,7 @@ function create_read_report(bibkey::String)
     # custom
     rrstr = replace(rrstr, "__TODAY__" => Dates.format(now(), "dd/mm/YY"))
     # from ref
-    rrstr = _replace_ref(rrstr, get_data(ref))
+    rrstr = _replace_ref(rrstr, refdict(ref))
 
     # write
     write(rrfile, rrstr)

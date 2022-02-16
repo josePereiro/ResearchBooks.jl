@@ -1,20 +1,17 @@
 ## ------------------------------------------------------------------
 # Book
 
-# The top book has no label
-RBook() = RBook("")
-
 ## ------------------------------------------------------------------
 # Meta
 get_parent(b::RBook) = b
 get_book(b::RBook) = b
 
-bookdir(b::RBook) = get_meta!(b, :bookdir, "")
-bookdir!(b::RBook, path::String) = set_meta!(b, :bookdir, realpath(path))
+bookdir(b::RBook) = getproperty!(b, :bookdir, "")
+bookdir!(b::RBook, path::String) = setproperty!(b, :bookdir, realpath(path))
 
 ## ------------------------------------------------------------------
 # Data
-documents(b::RBook) = get_data!(() -> OrderedDict{String, RBDoc}(), b, :docs)
+documents(b::RBook) = getproperty!(() -> OrderedDict{String, RBDoc}(), b, :docs)
 hasobj(d::RBook, label::String) = haskey(documents(d), label)
 
 ## ------------------------------------------------------------------
@@ -41,24 +38,24 @@ Base.iterate(b::RBook, state) = iterate(_values(documents(b)), state)
 # Show
 function Base.show(io::IO, b::RBook)
     ndocs = length(b)
-    println(io, _preview(io, "-"^70))
-    println(io, "RBook with ", ndocs, " document(s)")
+    print(io, "RBook with ", ndocs, " document(s)")
 
     # meta
     for meta in [:bookdir]
-        str = get_meta(b, meta, "")
+        str = getproperty(b, meta, "")
         if !isempty(str) 
-            println(io, meta, ": \"", _preview(io, str), "\"")
+            print(io, "\n - ", meta, ": \"", _preview(io, str), "\"")
         end
     end
 
     # data
     if ndocs > 0
-        print(io, "docs:")
+        print(io, "\ndocument(s):")
         _show_data_preview(io, b) do doc
             string("[", get_label(doc), "] ", get_title(doc))
         end
     end
+    print(io, "\n", _preview(io, "-"^70))
     return nothing
 end
 

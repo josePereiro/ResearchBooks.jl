@@ -4,15 +4,15 @@
 getdoc(s::RBSection) = get_parent(s)
 setdoc!(s::RBSection, doc::RBDoc) = set_parent!(s, doc)
 
-get_doi(s::RBSection) = get_meta!(s, :doi, "")
-set_doi!(s::RBSection, doi::String) = set_meta!(s, :doi, doi)
+get_doi(s::RBSection) = getproperty!(s, :doi, "")
+set_doi!(s::RBSection, doi::String) = setproperty!(s, :doi, doi)
 
-get_title(s::RBSection) = get_meta!(s, :title, "")
-set_title!(s::RBSection, title::String) = set_meta!(s, :title, title)
+get_title(s::RBSection) = getproperty!(s, :title, "")
+set_title!(s::RBSection, title::String) = setproperty!(s, :title, title)
 
 ## ------------------------------------------------------------------
 # Data
-items(s::RBSection) = get_data!(() -> OrderedDict{String, RBObject}(), s, :items)
+items(s::RBSection) = getproperty!(() -> OrderedDict{String, RBObject}(), s, :items)
 hasobj(s::RBSection, label::String) = haskey(items(s), label)
 
 ## ------------------------------------------------------------------
@@ -36,13 +36,12 @@ Base.iterate(s::RBSection, state) = iterate(_values(items(s)), state)
 # Show
 function Base.show(io::IO, s::RBSection)
     nobjs = length(s)
-    println(io, _preview(io, "-"^70))
     println(io, "RBSection(\"", get_label(s), "\") with ", nobjs, " object(s)")
     println(io, "path: '", get_relpath(s), "'")
     
     # meta
     for meta in [:title]
-        str = get_meta(s, meta, "")
+        str = getproperty(s, meta, "")
         if !isempty(str) 
             println(io, meta, ": \"", _preview(io, str), "\"")
         end
@@ -55,5 +54,6 @@ function Base.show(io::IO, s::RBSection)
             string("[", get_label(obj), "] ", typeof(obj))
         end
     end
+    print(io, "\n", _preview(io, "-"^70))
     return nothing
 end

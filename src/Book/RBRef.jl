@@ -2,35 +2,35 @@
 # References
 
 # A generalize reference object
-struct RBRef
+# struct RBRef
 
-    bibkey::String
-    author::String
-    year::String
-    title::String
-    doi::String
+#     bibkey::String
+#     author::String
+#     year::String
+#     title::String
+#     doi::String
 
-    dict::AbstractDict 
-end
+#     dict::AbstractDict 
+# end
 
 ## ------------------------------------------------------------------
 # Accessors
-get_data(r::RBRef) = r.dict
-get_bibkey(r::RBRef) = r.bibkey
-get_author(r::RBRef) = r.author
-get_year(r::RBRef) = r.year
-get_title(r::RBRef) = r.title
-get_doi(r::RBRef) = r.doi
+refdict(r::RBRef) = getproperty(r, :dict, nothing)
+get_bibkey(r::RBRef) = getproperty(r, :bibkey, "")
+get_author(r::RBRef) = getproperty(r, :author, "")
+get_year(r::RBRef) = getproperty(r, :year, "")
+get_title(r::RBRef) = getproperty(r, :title, "")
+get_doi(r::RBRef) = getproperty(r, :doi, "")
 
 ## ------------------------------------------------------------------
 # Base
 function Base.show(io::IO, r::RBRef)
-    println(io, _preview(io, "-"^70))
     print(io, "RBRef")
-    for f in [:bibkey, :author, :year, :title, :doi]
-        val = getproperty(r, f)
+    for meta in [:title, :bibkey, :author, :year, :doi]
+        val = getproperty(r, meta)
         isempty(val) && continue
-        print(io, "\n   ", f, ": \"", _preview(io, val), "\"")
+        print(io, "\n - ", meta, ": \"", _preview(io, val), "\"")
     end
+    print(io, "\n", _preview(io, "-"^70))
 end
 

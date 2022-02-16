@@ -76,14 +76,19 @@ function _format_crossref_data!(ref::Dict)
     end
 end
 
-function _crossref_to_rbref(ref::AbstractDict)
-    _format_crossref_data!(ref)
-    bibkey = ""
-    author = _crossref_entry_author(ref)
-    year = _crossref_entry_year(ref)
-    title = _crossref_entry_title(ref)
-    doi = _crossref_entry_doi(ref)
-    return RBRef(bibkey, author, year, title, doi, ref)
+function _crossref_to_rbref(refdict::AbstractDict)
+    _format_crossref_data!(refdict)
+
+    ref = RBRef()
+
+    ref.bibkey = ""
+    ref.author = _crossref_entry_author(refdict)
+    ref.year = _crossref_entry_year(refdict)
+    ref.title = _crossref_entry_title(refdict)
+    ref.doi = _crossref_entry_doi(refdict)
+    ref.dict = refdict
+
+    return ref
 end
 
 ## ------------------------------------------------------------------
@@ -93,5 +98,5 @@ function crossrefs(doi::String; force = false)
     for dict in ref_dicts
         push!(refs, _crossref_to_rbref(dict))
     end
-    return RBRefs(refs)
+    return RBRefList(refs)
 end

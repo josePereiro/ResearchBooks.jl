@@ -4,30 +4,30 @@
 get_book(d::RBDoc) = get_parent(d)
 set_book!(d::RBDoc, book::RBook) = set_parent!(d, book)
 
-get_title(d::RBDoc) = get_meta!(d, :title, "")
-set_title!(d::RBDoc, title::String) = set_meta!(d, :title, title)
+get_title(d::RBDoc) = getproperty!(d, :title, "")
+set_title!(d::RBDoc, title::String) = setproperty!(d, :title, title)
 
-get_doi(d::RBDoc) = get_meta!(d, :doi, "")
-set_doi!(d::RBDoc, doi::String) = set_meta!(d, :doi, doi)
+get_doi(d::RBDoc) = getproperty!(d, :doi, "")
+set_doi!(d::RBDoc, doi::String) = setproperty!(d, :doi, doi)
 
-get_year(d::RBDoc) = get_meta!(d, :year, "")
-set_year!(d::RBDoc, year::String) = set_meta!(d, :year, year)
+get_year(d::RBDoc) = getproperty!(d, :year, "")
+set_year!(d::RBDoc, year::String) = setproperty!(d, :year, year)
 
-get_bibkey(d::RBDoc) = get_meta!(d, :bibkey, "")
-set_bibkey!(d::RBDoc, bibkey::String) = set_meta!(d, :bibkey, bibkey)
+get_bibkey(d::RBDoc) = getproperty!(d, :bibkey, "")
+set_bibkey!(d::RBDoc, bibkey::String) = setproperty!(d, :bibkey, bibkey)
 
-get_abstract(d::RBDoc) = get_meta!(d, :abstract, "")
-set_abstract!(d::RBDoc, abstract::String) = set_meta!(d, :abstract, abstract)
+get_abstract(d::RBDoc) = getproperty!(d, :abstract, "")
+set_abstract!(d::RBDoc, abstract::String) = setproperty!(d, :abstract, abstract)
 
-get_reads(d::RBDoc) = get_meta!(d, :reads, Set{String}())
+get_reads(d::RBDoc) = getproperty!(d, :reads, Set{String}())
 add_read!(d::RBDoc, read::String, reads::String...) = (_push_csv!(get_reads(d), read, reads...); d)
 
-get_author(d::RBDoc) = get_meta!(d, :authors, Set{String}())
+get_author(d::RBDoc) = getproperty!(d, :authors, Set{String}())
 set_author!(d::RBDoc, author::String, authors::String...) = (_push_csv!(empty!(get_author(d)), author, authors...); d)
 
 ## ------------------------------------------------------------------
 # Data
-sections(d::RBDoc) = get_data!(() -> OrderedDict{String, RBSection}(), d, :secs)
+sections(d::RBDoc) = getproperty!(() -> OrderedDict{String, RBSection}(), d, :secs)
 hasobj(d::RBDoc, label::String) = haskey(sections(d), label)
 
 ## ------------------------------------------------------------------
@@ -53,24 +53,24 @@ Base.iterate(d::RBDoc, state) = iterate(_values(sections(d)), state)
 # show
 function Base.show(io::IO, d::RBDoc)
     nsecs = length(d)
-    println(io, _preview(io, "-"^70))
     println(io, "RBDoc(\"", get_label(d), "\") with ", nsecs, " section(s)")
-    println(io, "path: '", get_relpath(d), "'")
+    print(io, " - path: '", get_relpath(d), "'")
     
     # meta
     for meta in [:title, :doi]
-        str = get_meta(d, meta, "")
+        str = getproperty(d, meta, "")
         if !isempty(str) 
-            println(io, meta, ": \"", _preview(io, str), "\"")
+            print(io, "\n - ", meta, ": \"", _preview(io, str), "\"")
         end
     end
     
     # data
     if nsecs > 0
-        print(io, "section(s):")
+        print(io, "\nsection(s):")
         _show_data_preview(io, d) do sec
             string("[", get_label(sec), "] ", get_title(sec))
         end
     end
+    print(io, "\n", _preview(io, "-"^70))
     return nothing
 end

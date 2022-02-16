@@ -1,42 +1,49 @@
 ## ------------------------------------------------------------------
-# Accessors
-for sym in [:meta, :data]
+# Property handling
+function Base.getproperty(obj::RBObject, p::Symbol)
+    props = _get_properties(obj)
+    return haskey(props, p) ? props[p] : getfield(obj, p)
+end
 
-    getfun = Symbol("get_", sym)
-    fun = Symbol("get_", sym)
-    @eval $(fun)(obj::RBObject) = error($(fun), "(obj::", typeof(obj), ") no defined!!!")
-    @eval $(fun)(obj::RBObject, key) = getindex($(getfun)(obj), key)
-    @eval $(fun)(obj::RBObject, key, deft) = get($(getfun)(obj), key, deft)
-    @eval $(fun)(f::Function, obj::RBObject, key) = get(f, $(getfun)(obj), key)
-    fun = Symbol("get_", sym, "!")
-    @eval $(fun)(obj::RBObject, key, deft) = get!($(getfun)(obj), key, deft)
-    @eval $(fun)(f::Function, obj::RBObject, key) = get!(f, $(getfun)(obj), key)
+function Base.getproperty(obj::RBObject, p::Symbol, dflt)
+    props = _get_properties(obj)
+    get(props, p, dflt)
+end
 
-    fun = Symbol("has", sym)
-    @eval $(fun)(obj::RBObject, key) = haskey($(getfun)(obj), key)
-    fun = Symbol("set_", sym, "!")
-    @eval $(fun)(obj::RBObject, key, val) = setindex!($(getfun)(obj), val, key)
-    fun = Symbol(sym, "keys")
-    @eval $(fun)(obj::RBObject) = keys($(getfun)(obj))
-    fun = Symbol(sym, "values")
-    @eval $(fun)(obj::RBObject) = values($(getfun)(obj))
+function getproperty!(obj::RBObject, p::Symbol, dflt)
+    props = _get_properties(obj)
+    get!(props, p, dflt)
+end
+
+getproperty!(f::Function, obj::RBObject, p::Symbol) = getproperty!(obj, p, f())
+
+function Base.setproperty!(obj::RBObject, p::Symbol, value)
+    props = _get_properties(obj)
+    props[p] = value
+    return value
+end
+
+function Base.propertynames(obj::RBObject, private::Bool = false)
+    return collect(keys(_get_properties(obj)))
 end
 
 ## ------------------------------------------------------------------
 # common metas
-srcfile!(obj::RBObject, file::String) = set_meta!(obj, :srcfile, realpath(file))
-srcfile(obj::RBObject)::String = get_meta(obj, :srcfile, "")
+get_label(obj::RBObject) = getproperty(obj, :label, "")
 
-srcline!(obj::RBObject, line::Int) = set_meta!(obj, :srcline, line)
-srcline(obj::RBObject)::Int = get_meta(obj, :srcline, -1)
+srcfile!(obj::RBObject, file::String) = setproperty!(obj, :srcfile, realpath(file))
+srcfile(obj::RBObject)::String = getproperty(obj, :srcfile, "")
 
-get_parent(obj::RBObject) = get_meta(obj, :parent, nothing)
-set_parent!(obj::RBObject, parent::RBObject) = set_meta!(obj, :parent, parent)
+srcline!(obj::RBObject, line::Int) = setproperty!(obj, :srcline, line)
+srcline(obj::RBObject)::Int = getproperty(obj, :srcline, -1)
+
+get_parent(obj::RBObject) = getproperty(obj, :parent, nothing)
+set_parent!(obj::RBObject, parent::RBObject) = setproperty!(obj, :parent, parent)
 
 get_book(d::RBObject) = get_book(get_parent(d))
 bookdir(q::RBObject) = bookdir(get_book(q))
 
-get_tags(obj::RBObject) = get_meta!(obj, :tags, Set{String}())
+get_tags(obj::RBObject) = getproperty!(obj, :tags, Set{String}())
 add_tag!(obj::RBObject,  t::String, ts::String...) = (_push_csv!(get_tags(obj), t, ts...); obj)
 
 function get_path(obj::RBObject; rel = false)

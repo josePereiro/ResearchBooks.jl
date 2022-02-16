@@ -23,13 +23,13 @@ module ResearchBooks
     include("Book/RBParagraph.jl")
     include("Book/RBQuote.jl")
     include("Book/RBRef.jl")
-    include("Book/RBRefs.jl")
+    include("Book/RBRefList.jl")
     include("Book/utils.jl")
     
     export RBook, RBDoc, RBSection
     export RBObject, RBQuote, RBParagraph
-    export RBRef, RBRefs
-    export get_data, get_meta
+    export RBRef, RBRefList
+    export refdict, getproperty
     export eachobj
     export get_book, bookdir, get_label, get_path, get_relpath
     export get_doi, get_year, get_author, get_title, get_bibkey, get_tags
@@ -48,7 +48,6 @@ module ResearchBooks
     include("FunctionalInterface/RBParagraph_macros.jl")
     include("FunctionalInterface/newobj_macros.jl")
     include("FunctionalInterface/setmeta_macros.jl")
-    include("FunctionalInterface/getters.jl")
     include("FunctionalInterface/utils.jl")
     include("FunctionalInterface/filesys.jl")
     
@@ -62,7 +61,7 @@ module ResearchBooks
     export openbook, @openbook
     export @new_document!, @new_section!
     export @new_paragraph!, @new_quote!
-    export @set_meta!, @set_title!, @set_doi!, @set_text!
+    export @setproperty!, @set_title!, @set_doi!, @set_text!
     export @set_author!, @set_year!, @set_bibkey!, @set_abstract!
     export @add_tag!, @add_read!
     # export @create_doc_readme
