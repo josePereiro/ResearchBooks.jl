@@ -1,4 +1,9 @@
-const READ_REPORT_TEMPLATE = ["title", "year", "tags"]
+# Functional Interface
+_read_reports_dirname() = "ReadReports"
+_read_reports_dir() = joinpath(bookdir(), _read_reports_dirname())
+
+_rr_dir(refid::String) = joinpath(_read_reports_dir(), refid)
+_rr_srcfile(refid::String) = joinpath(_rr_dir(refid), "entry.rb.jl")
 
 function _load_rrtfile()
     rrdir = _read_reports_dir()
@@ -16,9 +21,11 @@ function _replace_ref(str, ref::Dict)
 end
 
 function create_read_report(bibkey::String)
-    _, ref = findfirst_bookbib(:bibkey => Regex("^$bibkey\$"))
+    ref = findfirst_bookbib(:bibkey => Regex("^$bibkey\$"))
     isnothing(ref) && 
-        error("ref '$(bibkey)' not found at any source bibs: $(bibtex_paths())")
+        error(
+            "ref '$(bibkey)' not found at any source bibs: ", bibtex_paths(bookdir())
+        )
 
     rrdir = _rr_dir(bibkey)
     mkpath(rrdir)
@@ -37,4 +44,3 @@ function create_read_report(bibkey::String)
     
     return rrfile
 end
-

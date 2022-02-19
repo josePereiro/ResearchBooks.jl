@@ -10,7 +10,17 @@ using ResearchBooks; @openbook
 @set_bibkey!("__BIBKEY__")
 @set_abstract!("__ABSTRACT__")
 
-@add_read!("__TODAY__")
+@set_ctime!("__TODAY__")
 @add_tag!("__KEYWORDS__")
+
+# ------------------------------------------------------------
+# @new_section!
+# @set_title!("General notes")
+
+# @new_paragraph!
+# @set_text!(
+#     """
+#     """
+# )
 
 # ------------------------------------------------------------

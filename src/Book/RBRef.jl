@@ -1,18 +1,6 @@
 ## ------------------------------------------------------------------
 # References
 
-# A generalize reference object
-# struct RBRef
-
-#     bibkey::String
-#     author::String
-#     year::String
-#     title::String
-#     doi::String
-
-#     dict::AbstractDict 
-# end
-
 ## ------------------------------------------------------------------
 # Accessors
 refdict(r::RBRef) = getproperty(r, :dict, nothing)

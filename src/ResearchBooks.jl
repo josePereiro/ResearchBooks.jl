@@ -49,6 +49,7 @@ module ResearchBooks
     include("FunctionalInterface/newobj_macros.jl")
     include("FunctionalInterface/setmeta_macros.jl")
     include("FunctionalInterface/utils.jl")
+    include("FunctionalInterface/show.jl")
     include("FunctionalInterface/filesys.jl")
     
     export currdoc, currdoc!
@@ -63,7 +64,8 @@ module ResearchBooks
     export @new_paragraph!, @new_quote!
     export @setproperty!, @set_title!, @set_doi!, @set_text!
     export @set_author!, @set_year!, @set_bibkey!, @set_abstract!
-    export @add_tag!, @add_read!
+    export @add_tag!, @set_ctime!
+    export show_tags
     # export @create_doc_readme
     
     export bookbib, findall_bookbib, findfirst_bookbib, filter_bookbib

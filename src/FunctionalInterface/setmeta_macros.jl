@@ -92,6 +92,14 @@ macro set_author!(ex::Union{String, Symbol}...)
     set_author!(obj, ex...)
 end
 
+macro set_ctime!(ex::String)
+    obj = _check_currobj()
+    _check_call_inbook(__source__, obj)
+    _check_bang_call(__source__, obj)
+    
+    set_ctime!(obj, ex)
+end
+
 ## ------------------------------------------------------------------
 # Meta adders
 
@@ -102,13 +110,4 @@ macro add_tag!(ex::Union{String, Symbol}...)
     
     ex = string.(ex)
     add_tag!(obj, ex...)
-end
-
-macro add_read!(ex::Union{String, Symbol}...)
-    obj = _check_currobj()
-    _check_call_inbook(__source__, obj)
-    _check_bang_call(__source__, obj)
-    
-    ex = string.(ex)
-    add_read!(obj, ex...)
 end

@@ -11,7 +11,7 @@ using ResearchBooks; @openbook
 @set_abstract!(
     "__ABSTRACT__"
 )
-@add_read!("__READ__")
+@set_ctime!("__READ__")
 @add_tag!("__KEYWORDS__")
 
 # ------------------------------------------------------------

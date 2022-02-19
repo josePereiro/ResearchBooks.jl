@@ -1,7 +1,7 @@
 ## ------------------------------------------------------------------
 # Meta
 
-get_sec!(q::RBQuote) = get_parent(q)
+get_sec(q::RBQuote) = get_parent(q)
 set_sec!(q::RBQuote, sec::RBSection) = set_parent!(q, sec)
 
 ## ------------------------------------------------------------------

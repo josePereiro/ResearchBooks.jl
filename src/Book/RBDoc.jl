@@ -19,8 +19,8 @@ set_bibkey!(d::RBDoc, bibkey::String) = setproperty!(d, :bibkey, bibkey)
 get_abstract(d::RBDoc) = getproperty!(d, :abstract, "")
 set_abstract!(d::RBDoc, abstract::String) = setproperty!(d, :abstract, abstract)
 
-get_reads(d::RBDoc) = getproperty!(d, :reads, Set{String}())
-add_read!(d::RBDoc, read::String, reads::String...) = (_push_csv!(get_reads(d), read, reads...); d)
+get_ctime(d::RBDoc) = getproperty!(d, :ctime, "")
+set_ctime!(d::RBDoc, ctime::String) = setproperty!(d, :ctime, ctime)
 
 get_author(d::RBDoc) = getproperty!(d, :authors, Set{String}())
 set_author!(d::RBDoc, author::String, authors::String...) = (_push_csv!(empty!(get_author(d)), author, authors...); d)

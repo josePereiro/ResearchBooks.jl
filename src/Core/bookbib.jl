@@ -89,24 +89,24 @@ function bookbib(bookdir::String)
 
     # return RBRefList
     refs = _bookbib_to_rbref.(values(_BOOKBIB)) 
-    return RBRefList(refs)
+    return reflist(refs)
 end
 
 ## ----------------------------------------------------------------------------
 # find
 
-function findall_bookbib(bookdir::String, qp, qps...) 
+function _findall_bookbib(bookdir::String, qp, qps...) 
     vec = references(bookbib(bookdir))
     findall_match(vec, qp, qps...)
 end
 
-
-function findfirst_bookbib(bookdir::String, qp, qps...) 
+function _findfirst_bookbib(bookdir::String, qp, qps...) 
     vec = references(bookbib(bookdir))
-    findfirst_match(vec, qp, qps...)
+    ret = findfirst_match(vec, qp, qps...)
+    isnothing(ret) ? ret : last(ret)
 end
 
-function filter_bookbib(bookdir::String, qp, qps...) 
+function _filter_bookbib(bookdir::String, qp, qps...) 
     vec = references(bookbib(bookdir))
     filter_match(vec, qp, qps...)
 end

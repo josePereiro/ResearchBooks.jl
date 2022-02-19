@@ -1,7 +1,9 @@
 ## ------------------------------------------------------------------
 # References
 
-function RBRefList(refs::Vector{RBRef})
+RBRefList
+
+function reflist(refs::Vector{RBRef})
     ref = RBRefList()
     push!(ref, refs...)
     return ref
@@ -11,6 +13,11 @@ end
 # Accessors
 references(r::RBRefList) = getproperty!(() -> Vector{RBRef}(), r, :refs)
 
+## ------------------------------------------------------------------
+# Meta
+
+get_sec(q::RBRefList) = get_parent(q)
+set_sec!(q::RBRefList, sec::RBSection) = set_parent!(q, sec)
 
 ## ------------------------------------------------------------------
 # Base

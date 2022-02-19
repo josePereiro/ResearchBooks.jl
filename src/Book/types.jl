@@ -36,6 +36,7 @@ end
 @RBObject RBParagraph
 @RBObject RBRef
 @RBObject RBRefList
+@RBObject RBSymLink
 
 ## ------------------------------------------------------------------
 # Section

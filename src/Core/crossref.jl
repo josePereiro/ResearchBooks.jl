@@ -98,5 +98,5 @@ function crossrefs(doi::String; force = false)
     for dict in ref_dicts
         push!(refs, _crossref_to_rbref(dict))
     end
-    return RBRefList(refs)
+    return reflist(refs)
 end
