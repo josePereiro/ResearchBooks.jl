@@ -1,3 +1,8 @@
+# Tag
+# TODO: Create a system for documenting Tags (e.g. 'to download' mark a text which contain source links to be downloaded) 
+# TODO: manage tags relations (e.g. just like object inheritance, or antagonism read vs toread)
+# TODO: All above can be handled using a RBObject (RBTag, RBAbstractTag) and a functional API (@new_tag, @set_parent, @add_antagonist, @add_similar)
+
 module ResearchBooks
 
     import TOML
@@ -66,6 +71,7 @@ module ResearchBooks
     export @set_author!, @set_year!, @set_bibkey!, @set_abstract!
     export @add_tag!, @set_ctime!
     export show_tags
+    export @report
     # export @create_doc_readme
     
     export bookbib, findall_bookbib, findfirst_bookbib, filter_bookbib

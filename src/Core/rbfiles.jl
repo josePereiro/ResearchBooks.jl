@@ -26,7 +26,8 @@ function _include_rdfile(path; force = false)
     
     need_update = has_event!(_INCLUDE_MTIME_EVENT, path)
     if force || need_update
-        include(path)
+        # include into main
+        Base.include(Main, path)
         return true
     end
     return false

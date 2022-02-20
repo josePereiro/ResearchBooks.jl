@@ -40,3 +40,21 @@ function _extract_expr_pairs(ex)
     end
     return pairs
 end
+
+function _capture_output(dofunc::Function)
+    tfile = tempname()
+    try
+        touch(tfile)
+        open(tfile, "w") do out
+            redirect_stdout(out) do
+                redirect_stderr(out) do
+                    dofunc()
+                end
+            end
+        end
+        return read(tfile, String)
+    finally
+        rm(tfile; force = true)
+    end
+end
+
