@@ -33,8 +33,8 @@ function _add_secobj!(f::Function, callinfo::LineNumberNode)
     srcfile!(obj, srcfile(callinfo))
     srcline!(obj, srcline(callinfo))
 
-    label = get_label(obj)
-    push!(sec, label => obj)
+    # add to section
+    add_obj!(sec, obj)
 
     currobj!(obj)
 end

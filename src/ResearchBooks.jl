@@ -3,6 +3,13 @@
 # TODO: manage tags relations (e.g. just like object inheritance, or antagonism read vs toread)
 # TODO: All above can be handled using a RBObject (RBTag, RBAbstractTag) and a functional API (@new_tag, @set_parent, @add_antagonist, @add_similar)
 
+# Filetree
+# TODO: Add folder sorting capabilities (book -> Readreport -> :year -> :author)
+# TODO: Abstract the concept of a Structured Folder
+
+# To Remember
+# TODO: Create a 'To Remember' tag and a system for interacting with Anki (or any other to remember app)
+
 module ResearchBooks
 
     import TOML
@@ -28,6 +35,7 @@ module ResearchBooks
     include("Book/RBParagraph.jl")
     include("Book/RBQuote.jl")
     include("Book/RBRef.jl")
+    include("Book/RBTagMeta.jl")
     include("Book/RBRefList.jl")
     include("Book/utils.jl")
     
@@ -35,8 +43,9 @@ module ResearchBooks
     export RBObject, RBQuote, RBParagraph
     export RBRef, RBRefList
     export refdict, getproperty
-    export eachobj
-    export get_book, bookdir, get_label, get_path, get_relpath
+    export eachdoc, eachobj, eachtagmeta
+    export tagmetas, objlabels
+    export get_book, bookdir, get_label, localpath, localrelpath
     export get_doi, get_year, get_author, get_title, get_bibkey, get_tags
     export references
     
@@ -49,6 +58,7 @@ module ResearchBooks
     include("FunctionalInterface/genlabel.jl")
     include("FunctionalInterface/RBDoc_macros.jl")
     include("FunctionalInterface/RBSection_macros.jl")
+    include("FunctionalInterface/RBTagMeta_macros.jl")
     include("FunctionalInterface/RBQuote_macros.jl")
     include("FunctionalInterface/RBParagraph_macros.jl")
     include("FunctionalInterface/newobj_macros.jl")
@@ -56,6 +66,7 @@ module ResearchBooks
     include("FunctionalInterface/utils.jl")
     include("FunctionalInterface/show.jl")
     include("FunctionalInterface/filesys.jl")
+    include("FunctionalInterface/tag_report.jl")
     
     export currdoc, currdoc!
     export currsec, currsec!
@@ -70,8 +81,9 @@ module ResearchBooks
     export @setproperty!, @set_title!, @set_doi!, @set_text!
     export @set_author!, @set_year!, @set_bibkey!, @set_abstract!
     export @add_tag!, @set_ctime!
+    export @new_tagmeta!, @set_similars!, @set_antagonists!, @set_description!, @set_supertag!
     export show_tags
-    export @report
+    export show_tag_report, @report
     # export @create_doc_readme
     
     export bookbib, findall_bookbib, findfirst_bookbib, filter_bookbib

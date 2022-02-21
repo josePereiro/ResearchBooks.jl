@@ -10,11 +10,9 @@ macro RBObject(name)
     isdefined(Main, name) && return :(nothing)
     return quote
         struct $(name) <: RBObject
-            # label::String # labels are unmutable
             props::Dict{Symbol, Any}
 
             function $(esc(name))(label::String)
-                # new(label, Dict{Symbol, Any}())
                 obj = new(Dict{Symbol, Any}())
                 obj.label = label
                 return obj
@@ -25,7 +23,6 @@ macro RBObject(name)
         end
 
         # RBObject Interface
-        # $(esc(:get_label))(obj::$(esc(name))) = getfield(obj, :label)
         $(esc(:_get_properties))(obj::$(esc(name))) = getfield(obj, :props)
     end
 end
@@ -37,6 +34,7 @@ end
 @RBObject RBRef
 @RBObject RBRefList
 @RBObject RBSymLink
+@RBObject RBTagMeta
 
 ## ------------------------------------------------------------------
 # Section

@@ -13,8 +13,8 @@ get_bibkey() = _call_if_something(get_bibkey, currdoc(), "")
 # currobj
 get_title() = _call_if_something(get_title, currobj(), "")
 get_tags() = _call_if_something(get_tags, currobj(), nothing)
-get_path() = _call_if_something(get_path, currobj(), "")
-get_relpath() = _call_if_something(get_relpath, currobj(), "")
+localpath() = _call_if_something(localpath, currobj(), "")
+localrelpath() = _call_if_something(localrelpath, currobj(), "")
 
 # crossrefs
 crossrefs(; force = false) = crossrefs(get_doi(); force)

@@ -9,13 +9,13 @@ set_sec!(l::RBSymLink, sec::RBSection) = set_parent!(l, sec)
 # Data
 
 get_text(l::RBSymLink) = getproperty!(l, :text, "")
-set_text!(l::RBSymLink, text::String) = setproperty!(l, :text, text)
+set_text!(l::RBSymLink, text::String) = setproperty!(l, :text, strip(text))
 
 ## ------------------------------------------------------------------
 # show
 function Base.show(io::IO, p::RBSymLink)
     print(io, "RBSymLink(\"", get_label(p), "\")")
-    print(io, "\n - path: '", get_relpath(p), "'")
+    print(io, "\n - path: '", localrelpath(p), "'")
     text = get_text(p)
     !isempty(text) && print(io, "\n - text: \"", _preview(io, text), "\"")
     tags = join(get_tags(p), ", ")

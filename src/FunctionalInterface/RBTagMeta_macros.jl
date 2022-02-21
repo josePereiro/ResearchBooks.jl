@@ -1,5 +1,5 @@
 ## ------------------------------------------------------------------
-function _new_document!(callinfo::LineNumberNode, label)
+function _new_tagmeta!(callinfo::LineNumberNode, label)
 
     # book
     book = _check_currbook()
@@ -11,19 +11,18 @@ function _new_document!(callinfo::LineNumberNode, label)
     _check_call_inbook(callinfo, book)
 
     # new doc
-    doc = RBDoc(label)
-    set_book!(doc, book)
-    srcfile!(doc, srcfile(callinfo))
-    srcline!(doc, srcline(callinfo))
+    tmeta = RBTagMeta(label)
+    set_book!(tmeta, book)
+    srcfile!(tmeta, srcfile(callinfo))
+    srcline!(tmeta, srcline(callinfo))
 
     # add to book
-    add_doc!(book, doc)
+    add_tagmeta!(book, tmeta)
 
-    currdoc!(doc)
+    currobj!(tmeta)
 end
 
 ## ------------------------------------------------------------------
-macro new_document!(ex...)
-    label = _insert_label!("new_document!", ex, __source__)
-    _new_document!(__source__, label)
+macro new_tagmeta!(label::String)
+    _new_tagmeta!(__source__, label)
 end

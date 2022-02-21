@@ -18,17 +18,18 @@ end
 bookbib_file(bookdir) = joinpath(bookdir, "bookbib.toml")
 clear_bookbib_file(bookdir) = rm(bookbib_file(bookdir); force = true)
 
-function _bookbib_to_rbref(refdict::AbstractDict)
+function _bookbib_to_rbref(dict::AbstractDict)
 
     ref = RBRef()
 
-    # add custom
-    ref.bibkey = get(refdict, "bibkey", "")
-    ref.author = get(refdict, "author", "")
-    ref.year = get(refdict, "year", "")
-    ref.title = get(refdict, "title", "")
-    ref.doi = _doi_to_url(get(refdict, "doi", ""))
-    ref.dict = refdict
+    # add fields
+    set_bibkey!(ref, get(dict, "bibkey", ""))
+    set_author!(ref, get(dict, "author", ""))
+    set_year!(ref, get(dict, "year", ""))
+    set_title!(ref, get(dict, "title", ""))
+    set_doi!(ref, get(dict, "doi", ""))
+    add_tag!(ref, get(dict, "keywords", ""))
+    refdict!(ref, dict)
     
     return ref
 end

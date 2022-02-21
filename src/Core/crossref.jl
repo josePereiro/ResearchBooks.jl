@@ -52,6 +52,7 @@ end
 _crossref_entry_doi(ref::AbstractDict) = get(ref, "DOI", "")
 _crossref_entry_author(ref::AbstractDict) = get(ref, "author", "")
 _crossref_entry_year(ref::AbstractDict) = get(ref, "year", "")
+_crossref_entry_keywords(ref::AbstractDict) = get(ref, "keywords", "")
 
 function _crossref_entry_title(ref::AbstractDict) 
     hint = "-title"
@@ -76,17 +77,19 @@ function _format_crossref_data!(ref::Dict)
     end
 end
 
-function _crossref_to_rbref(refdict::AbstractDict)
-    _format_crossref_data!(refdict)
+function _crossref_to_rbref(dict::AbstractDict)
+    _format_crossref_data!(dict)
 
     ref = RBRef()
 
-    ref.bibkey = ""
-    ref.author = _crossref_entry_author(refdict)
-    ref.year = _crossref_entry_year(refdict)
-    ref.title = _crossref_entry_title(refdict)
-    ref.doi = _crossref_entry_doi(refdict)
-    ref.dict = refdict
+    # add firlds
+    set_bibkey!(ref, "")
+    set_author!(ref, _crossref_entry_author(dict))
+    set_year!(ref, _crossref_entry_year(dict))
+    set_title!(ref, _crossref_entry_title(dict))
+    set_doi!(ref, _crossref_entry_doi(dict))
+    add_tag!(ref, _crossref_entry_keywords(dict))
+    refdict!(ref, dict)
 
     return ref
 end

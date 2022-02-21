@@ -1,8 +1,6 @@
 ## ------------------------------------------------------------------
 # References
 
-RBRefList
-
 function reflist(refs::Vector{RBRef})
     ref = RBRefList()
     push!(ref, refs...)

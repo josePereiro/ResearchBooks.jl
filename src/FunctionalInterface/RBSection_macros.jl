@@ -17,7 +17,8 @@ function _new_section!(callinfo::LineNumberNode, label)
     srcfile!(sec, srcfile(callinfo))
     srcline!(sec, srcline(callinfo))
     
-    push!(doc, label => sec)
+    # add to doc
+    add_sec!(doc, sec)
 
     currsec!(sec)
 end

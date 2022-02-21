@@ -58,3 +58,17 @@ function _capture_output(dofunc::Function)
     end
 end
 
+function _spaceless_unsensitive_regex(hint)
+    hint = strip(hint)
+    hint = replace(hint, isspace => "\\s*")
+    return Regex(string("^(?:", "(?i)", "\\s*", hint, "\\s*", ")", "\$"))
+end
+
+# ---------------------------------------------------
+function _has_tag(tags::Set, hint)
+    for tag in tags
+        has_match(tag, hint) && return true
+    end
+    return false
+end
+_has_tag(hint) = (tags) ->  _has_tag(tags, hint)

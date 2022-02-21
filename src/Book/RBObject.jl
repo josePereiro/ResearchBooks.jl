@@ -31,7 +31,7 @@ end
 # common metas
 get_label(obj::RBObject) = getproperty(obj, :label, "")
 
-srcfile!(obj::RBObject, file::String) = setproperty!(obj, :srcfile, realpath(file))
+srcfile!(obj::RBObject, file::String) = setproperty!(obj, :srcfile, realpath(strip(file)))
 srcfile(obj::RBObject)::String = getproperty(obj, :srcfile, "")
 
 srcline!(obj::RBObject, line::Int) = setproperty!(obj, :srcline, line)
@@ -43,10 +43,10 @@ set_parent!(obj::RBObject, parent::RBObject) = setproperty!(obj, :parent, parent
 get_book(d::RBObject) = get_book(get_parent(d))
 bookdir(q::RBObject) = bookdir(get_book(q))
 
-get_tags(obj::RBObject) = getproperty!(obj, :tags, Set{String}())
+get_tags(obj::RBObject) = getproperty!(() -> Set{String}(), obj, :tags)
 add_tag!(obj::RBObject,  t::String, ts::String...) = (_push_csv!(get_tags(obj), t, ts...); obj)
 
-function get_path(obj::RBObject; rel = false)
+function localpath(obj::RBObject; rel = false)
     file = srcfile(obj)
     file = rel ? relpath(file) : file
     line = srcline(obj)
@@ -54,4 +54,4 @@ function get_path(obj::RBObject; rel = false)
     return string(file, linestr)
 end
 
-get_relpath(obj::RBObject) = get_path(obj; rel = true)
+localrelpath(obj::RBObject) = localpath(obj; rel = true)

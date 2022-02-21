@@ -5,22 +5,22 @@ get_book(d::RBDoc) = get_parent(d)
 set_book!(d::RBDoc, book::RBook) = set_parent!(d, book)
 
 get_title(d::RBDoc) = getproperty!(d, :title, "")
-set_title!(d::RBDoc, title::String) = setproperty!(d, :title, title)
+set_title!(d::RBDoc, title::String) = setproperty!(d, :title, strip(title))
 
 get_doi(d::RBDoc) = getproperty!(d, :doi, "")
-set_doi!(d::RBDoc, doi::String) = setproperty!(d, :doi, doi)
+set_doi!(d::RBDoc, doi::String) = setproperty!(d, :doi, _doi_to_url(strip(doi)))
 
 get_year(d::RBDoc) = getproperty!(d, :year, "")
-set_year!(d::RBDoc, year::String) = setproperty!(d, :year, year)
+set_year!(d::RBDoc, year::String) = setproperty!(d, :year, strip(year))
 
 get_bibkey(d::RBDoc) = getproperty!(d, :bibkey, "")
-set_bibkey!(d::RBDoc, bibkey::String) = setproperty!(d, :bibkey, bibkey)
+set_bibkey!(d::RBDoc, bibkey::String) = setproperty!(d, :bibkey, strip(bibkey))
 
 get_abstract(d::RBDoc) = getproperty!(d, :abstract, "")
-set_abstract!(d::RBDoc, abstract::String) = setproperty!(d, :abstract, abstract)
+set_abstract!(d::RBDoc, abstract::String) = setproperty!(d, :abstract, strip(abstract))
 
 get_ctime(d::RBDoc) = getproperty!(d, :ctime, "")
-set_ctime!(d::RBDoc, ctime::String) = setproperty!(d, :ctime, ctime)
+set_ctime!(d::RBDoc, ctime::String) = setproperty!(d, :ctime, strip(ctime))
 
 get_author(d::RBDoc) = getproperty!(d, :authors, Set{String}())
 set_author!(d::RBDoc, author::String, authors::String...) = (_push_csv!(empty!(get_author(d)), author, authors...); d)
@@ -28,16 +28,12 @@ set_author!(d::RBDoc, author::String, authors::String...) = (_push_csv!(empty!(g
 ## ------------------------------------------------------------------
 # Data
 sections(d::RBDoc) = getproperty!(() -> OrderedDict{String, RBSection}(), d, :secs)
-hasobj(d::RBDoc, label::String) = haskey(sections(d), label)
+hassec(d::RBDoc, label::String) = haskey(sections(d), strip(label))
 
 ## ------------------------------------------------------------------
 # OrderedDict
 Base.length(d::RBDoc) = length(sections(d))
-Base.haskey(d::RBDoc, key) = haskey(sections(d), key)
 Base.getindex(d::RBDoc, key::String) = getindex(sections(d), key)
-Base.setindex!(d::RBDoc, value::RBSection, key::String) = setindex!(sections(d), value, key)
-Base.push!(d::RBDoc, s::Pair, ss::Pair...) = push!(sections(d), s, ss...)
-Base.keys(d::RBDoc) = keys(sections(d))
 Base.get(d::RBDoc, key::String, default) = get(sections(d), key, default)
 Base.get!(d::RBDoc, key::String, default) = get!(sections(d), key, default)
 
@@ -54,7 +50,7 @@ Base.iterate(d::RBDoc, state) = iterate(_values(sections(d)), state)
 function Base.show(io::IO, d::RBDoc)
     nsecs = length(d)
     println(io, "RBDoc(\"", get_label(d), "\") with ", nsecs, " section(s)")
-    print(io, " - path: '", get_relpath(d), "'")
+    print(io, " - path: '", localrelpath(d), "'")
     
     # meta
     for meta in [:title, :doi]
@@ -73,4 +69,36 @@ function Base.show(io::IO, d::RBDoc)
     end
     print(io, "\n", _preview(io, "-"^70))
     return nothing
+end
+
+## ------------------------------------------------------------------
+# API
+function eachobj(doc::RBDoc)
+    ch = Channel{RBObject}(1) do ch_
+        for sec in doc
+            put!(ch_, sec)
+            for obj in sec
+                put!(ch_, obj)
+            end
+        end
+    end
+
+    return (obj for obj in ch)
+end
+
+# This should be the only method to add nre documents
+# It updates all sort of stuff
+function add_sec!(doc::RBDoc, sec::RBSection)
+    
+    seclabel = get_label(sec)
+    
+    # Update stuff
+    # obj labels
+    add_objlabel!(sec)
+    
+    # add doc
+    secs = sections(doc)
+    push!(secs, seclabel => sec)
+    
+    return doc
 end
