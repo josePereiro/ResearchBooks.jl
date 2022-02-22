@@ -21,6 +21,7 @@ function _replace_ref(str, ref::Dict)
 end
 
 function create_read_report(bibkey::String)
+    !isempty(bibkey) && error("bibkey is empty")
     ref = findfirst_bookbib(:bibkey => Regex("^$bibkey\$"))
     isnothing(ref) && 
         error(

@@ -6,6 +6,8 @@
 
 # TODO: Creates a tag recomendation system.
 
+# TODO: Make tags insensitive to space (non alpha numeric) and case. Create standarization tool (detect tag variants).
+
 
 # RBTagMeta
 get_similars(obj::RBTagMeta) = getproperty!(() -> Set{String}(), obj, :similar)
