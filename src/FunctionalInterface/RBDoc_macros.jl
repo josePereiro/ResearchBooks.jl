@@ -5,7 +5,6 @@ function _new_document!(callinfo::LineNumberNode, label)
     book = _check_currbook()
 
     # TODO: Update book but just if necessary
-    # _include_rbfiles!(book)
 
     # checks
     _check_call_inbook(callinfo, book)

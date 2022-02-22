@@ -33,7 +33,7 @@ function _include_rdfile(path; force = false)
     return false
 end
 
-function _include_rbfiles!(book::RBook; force = false)
+function _include_rbfiles!(book::RBook; force = false, nipass = 3)
 
     # TODO: for now including all files every time
     # A no-action-required mechanism must be provided
@@ -44,7 +44,7 @@ function _include_rbfiles!(book::RBook; force = false)
             empty!(book)
             bdir = bookdir(book)
             
-            for ipass in 1:2
+            for ipass in 1:nipass
 
                 _set_ipass!(ipass)
 

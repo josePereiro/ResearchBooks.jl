@@ -22,7 +22,6 @@ function _add_secobj!(f::Function, callinfo::LineNumberNode)
     sec = _check_currsec()
     
     # TODO: Update book but just if necessary
-    # _include_rbfiles!(get_book(sec))
     
     # checks
     _check_call_inbook(callinfo, sec)

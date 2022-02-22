@@ -21,6 +21,8 @@ function _replace_line(callinfo::LineNumberNode, old, new)
             println(io, line)
         end
     end
+    touch(file)
+    return nothing
 end
 
 # ------------------------------------------

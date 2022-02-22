@@ -3,6 +3,7 @@ function _openbook(dir0::String; reload = false)
     
     # If cache missed
     book = currbook()
+    nipass = 1
     if isnothing(book)
 
         # bookdir
@@ -13,10 +14,12 @@ function _openbook(dir0::String; reload = false)
         book = RBook()
         bookdir!(book, bdir)
         currbook!(book)
+
+        nipass = 3
     end
 
     # Update book
-    _include_rbfiles!(book; force = reload)
+    _include_rbfiles!(book; force = reload, nipass)
 
     return book
 end

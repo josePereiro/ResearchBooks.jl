@@ -29,8 +29,9 @@ end
 
 ## ------------------------------------------------------------------
 # Items
-@RBObject RBQuote
 @RBObject RBParagraph
+@RBObject RBQuote
+@RBObject RBNote
 @RBObject RBRef
 @RBObject RBRefList
 @RBObject RBSymLink

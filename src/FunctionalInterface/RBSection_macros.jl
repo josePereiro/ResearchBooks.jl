@@ -5,7 +5,6 @@ function _new_section!(callinfo::LineNumberNode, label)
     doc = _check_currdoc()
     
     # TODO: Update book but just if necessary
-    # _include_rbfiles!(get_book(doc))
     
     # checks
     _check_call_inbook(callinfo, doc)

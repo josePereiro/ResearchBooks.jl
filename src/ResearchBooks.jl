@@ -1,7 +1,22 @@
-# Tag
-# TODO: Create a system for documenting Tags (e.g. 'to download' mark a text which contain source links to be downloaded) 
-# TODO: manage tags relations (e.g. just like object inheritance, or antagonism read vs toread)
-# TODO: All above can be handled using a RBObject (RBTag, RBAbstractTag) and a functional API (@new_tag, @set_parent, @add_antagonist, @add_similar)
+# Inter book operations
+# TODO: Link on run time two books
+# USAGE: You could have a private and a public book (both in different repositories)
+# TODO: This might introduce cooperation capabilities
+
+# Include system
+# TODO: Redo include system (make it lazy)
+# NOTES: Make it includes the whole book (even with the multiple passes maybe) only if currbook() === nothing
+# NOTES: The rest of the time just include the modified files
+# NOTES: The user can always force the whole loading at any time.
+# TODO: redo the API
+
+# Tags
+# TODO: Include tag alias (maybe, not sure)
+# TODO: Include tag types
+# TODO: Include tag parameters
+# TODO: Creates a tag recommendation system.
+# TODO: Create a parametrized tag system. Like IL5.
+# TODO: Make tags insensitive to space (non alpha numeric) and case. Create standardization tool (detect tag variants).
 
 # Filetree
 # TODO: Add folder sorting capabilities (book -> Readreport -> :year -> :author)
@@ -9,6 +24,13 @@
 
 # To Remember
 # TODO: Create a 'To Remember' tag and a system for interacting with Anki (or any other to remember app)
+
+# TODOS
+# TODO: make a todo report 
+
+# Documments
+# TODO: Revisit the doc stuctures (allow nested sections and sectionless documents)
+
 
 module ResearchBooks
 
@@ -34,14 +56,17 @@ module ResearchBooks
     include("Book/RBook.jl")
     include("Book/RBParagraph.jl")
     include("Book/RBQuote.jl")
+    include("Book/RBNote.jl")
     include("Book/RBRef.jl")
     include("Book/RBTagMeta.jl")
     include("Book/RBRefList.jl")
     include("Book/utils.jl")
     
     export RBook, RBDoc, RBSection
-    export RBObject, RBQuote, RBParagraph
+    export RBObject
+    export RBQuote, RBParagraph, RBNote
     export RBRef, RBRefList
+    export RBTagMeta
     export refdict, getproperty
     export eachdoc, eachobj, eachtagmeta
     export tagmetas, objlabels
@@ -60,6 +85,7 @@ module ResearchBooks
     include("FunctionalInterface/RBSection_macros.jl")
     include("FunctionalInterface/RBTagMeta_macros.jl")
     include("FunctionalInterface/RBQuote_macros.jl")
+    include("FunctionalInterface/RBNote_macros.jl")
     include("FunctionalInterface/RBParagraph_macros.jl")
     include("FunctionalInterface/newobj_macros.jl")
     include("FunctionalInterface/setmeta_macros.jl")
@@ -77,7 +103,7 @@ module ResearchBooks
     export genlabel, @genlabel!
     export openbook, @openbook
     export @new_document!, @new_section!
-    export @new_paragraph!, @new_quote!
+    export @new_paragraph!, @new_quote!, @new_note!
     export @setproperty!, @set_title!, @set_doi!, @set_text!
     export @set_author!, @set_year!, @set_bibkey!, @set_abstract!
     export @set_ctime!
