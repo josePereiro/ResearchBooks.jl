@@ -46,6 +46,9 @@ bookdir(q::RBObject) = bookdir(get_book(q))
 get_tags(obj::RBObject) = getproperty!(() -> Set{String}(), obj, :tags)
 add_tag!(obj::RBObject,  t::String, ts::String...) = (_push_csv!(get_tags(obj), t, ts...); obj)
 
+get_todos(obj::RBObject) = getproperty!(() -> Set{String}(), obj, :todos)
+add_todo!(obj::RBObject,  td::String, tds::String...) = (_push_csv!(get_todos(obj), td, tds...); obj)
+
 function localpath(obj::RBObject; rel = false)
     file = srcfile(obj)
     file = rel ? relpath(file) : file

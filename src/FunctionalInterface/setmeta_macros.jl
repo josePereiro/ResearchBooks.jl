@@ -95,3 +95,7 @@ end
 macro add_tag!(ex::Union{String, Symbol}...)
     _invoke_setter(add_tag!, __source__, string.(ex)...)
 end
+
+macro add_todo!(ex::Union{String, Symbol}...)
+    _invoke_setter(add_todo!, __source__, string.(ex)...)
+end

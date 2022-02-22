@@ -80,7 +80,8 @@ module ResearchBooks
     export @new_paragraph!, @new_quote!
     export @setproperty!, @set_title!, @set_doi!, @set_text!
     export @set_author!, @set_year!, @set_bibkey!, @set_abstract!
-    export @add_tag!, @set_ctime!
+    export @set_ctime!
+    export @add_tag!, @add_todo!
     export @new_tagmeta!, @set_similars!, @set_antagonists!, @set_description!, @set_supertag!
     export show_tags
     export show_tag_report, @report

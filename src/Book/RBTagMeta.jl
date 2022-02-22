@@ -6,6 +6,8 @@
 
 # TODO: Creates a tag recomendation system.
 
+# TODO: Create a parametrized tag system. Like IL5.
+
 # TODO: Make tags insensitive to space (non alpha numeric) and case. Create standarization tool (detect tag variants).
 
 
